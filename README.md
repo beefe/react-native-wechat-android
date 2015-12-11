@@ -83,11 +83,20 @@ copy wechat/libs/libammsdk.jar to android/app/libs , or go WeChat open resource 
 Create a wxapi directory in your package name, and create a WXEntryActivity class in the wxapi directory, which is inherited from the Activity (for example, the package name is com.heng, then the WXEntryActivity should be located in the com.heng.wxapi), and add the following code in the AndroidManifest.xml file
 
 ```xml
+ ...
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> 
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/> 
+  <uses-permission android:name="android.permission.READ_PHONE_STATE"/> 
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+ ...
+
+ ...
   <activity
     android:name=".wxapi.WXEntryActivity"
-    android:exported="true"
-    android:theme="@android:style/Theme.Translucent.NoTitleBar" 
-  />
+     android:exported="true"
+     android:theme="@android:style/Theme.Translucent.NoTitleBar" 
+   />
+ ...
 ```
 
 #### 第七步 : 为添加的WXEntryActivity实现IWXAPIEventHandler接口及相应的方法 / Step 7 -  To add the WXEntryActivity to achieve the IWXAPIEventHandler interface and the corresponding method
