@@ -256,10 +256,13 @@ AppRegistry.registerComponent('MyProject', () => MyProject);
 
 ```
 
-### Run Renderings
+## Run Renderings
 <center>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/screenshotone.jpeg"
     width="300" height="450"/>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/screenshottwo.jpeg"
     width="300" height="450"/>
 </center>
+
+## Notes
+打包apk请参考[Generating Signed APK](http://facebook.github.io/react-native/docs/signed-apk-android.html#content)
