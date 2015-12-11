@@ -1,5 +1,6 @@
 # react-native-wechat-android
 react-native 的微信SDK辅助包，目前仅支持微信登录。
+
 The WeChat sdk help library for react-native , currently only support wechat login .
 
 ## 安装及使用方法 / Installation and How to use
