@@ -29,9 +29,9 @@ public class WeChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void registerApp(String appId) {
+    public void registerApp(String appId,Callback callback) {
         WeChatModule.wxApi = WXAPIFactory.createWXAPI(getReactApplicationContext(),appId, true);
-        WeChatModule.wxApi.registerApp(appId);
+        callback.invoke(WeChatModule.wxApi.registerApp(appId));
     }
 
     @ReactMethod
