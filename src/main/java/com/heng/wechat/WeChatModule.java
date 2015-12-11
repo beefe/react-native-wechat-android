@@ -40,7 +40,7 @@ public class WeChatModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void sendAuthRequest(String state) {
+    public void sendAuthReq(String state) {
         SendAuth.Req req = new SendAuth.Req();
         req.scope = "snsapi_userinfo";
         req.state = state;
