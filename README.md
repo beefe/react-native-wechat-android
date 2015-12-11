@@ -262,6 +262,10 @@ AppRegistry.registerComponent('MyProject', () => MyProject);
     width="300" height="450"/>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/screenshottwo.jpeg"
     width="300" height="450"/>
+    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/screenshotthree.jpeg"
+    width="300" height="450"/>
+    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/screenshotfour.jpeg"
+    width="300" height="450"/>
 </center>
 
 ## Notes
