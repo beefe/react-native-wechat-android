@@ -72,7 +72,9 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 ```
 
 #### 第五步 : 添加微信SDK / Step 5 Add WeChat SDK
-微信开放平台的资源中心去[Android资源下载](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419319167)下载[Android开发工具包](https://res.wx.qq.com/open/zh_CN/htmledition/res/dev/download/sdk/Android2_SDK238f8d.zip)
+把wechat/libs/libammsdk.jar复制到android/app/libs文件夹下，或者去微信开放平台的资源中心 点击[Android资源下载](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419319167)下载[Android开发工具包](https://res.wx.qq.com/open/zh_CN/htmledition/res/dev/download/sdk/Android2_SDK238f8d.zip)
+
+copy wechat/libs/libammsdk.jar to android/app/libs , or go WeChat open resource center click [Android资源下载](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419319167) to download [Android开发工具包](https://res.wx.qq.com/open/zh_CN/htmledition/res/dev/download/sdk/Android2_SDK238f8d.zip)
 
 #### 第六步 : 添加WXEntryActivity并在AndroidManifest.xml中注册 / Step 6 - Add WXEntryActivity and register in AndroidManifest.xml
 在你的包名相应目录下新建一个wxapi目录，并在该wxapi目录下创建一个WXEntryActivity类，该类继承自Activity（例如应用程序的包名为com.heng，则WXEntryActivity应该位于com.heng.wxapi包下）,并在AndroidManifest.xml文件中添加如下代码：
