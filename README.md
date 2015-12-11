@@ -143,7 +143,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         map.putString("state", state);  @
         params.putMap("response", map); @
         WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("finishedAuth", params); @
+                .emit("didRecvAuthResponse", params); @
         finish();
       
         // @所标记的key可以自由更改,对应你的js文件的key即可 / @ the key tag can be changed freely, and you can do the key of your JS file.
@@ -192,10 +192,10 @@ var MyProject = React.createClass({
     );
   },
   _sendAuthRequest(){
-    WeChatAndroid.sendAuthRequest(state);
+    WeChatAndroid.sendAuthReq(state);
   },
   componentWillMount: function(){
-    DeviceEventEmitter.addListener('finishedAuth',function(event){
+    DeviceEventEmitter.addListener('didRecvAuthResponse',function(event){
       var errCode = event.response.errCode;
       switch(errCode){
         case 0:
