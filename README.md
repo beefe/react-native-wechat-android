@@ -224,13 +224,13 @@ var MyProject = React.createClass({
     return (
       <View style={styles.container}>
         <Text style={styles.text} onPress={this._registerApp} >
-          注册到微信 / Register to WeChat
+          注册到微信
         </Text>
         <Text style={styles.text} onPress={this._isWXAppInstalled} >
-          是否安装微信 / Is the installation of WeChat
+          是否安装微信
         </Text>
         <Text style={styles.text} onPress={this._sendAuthRequest} >
-          微信登录 / WeChat login
+          微信登录
         </Text>
       </View>
     );
