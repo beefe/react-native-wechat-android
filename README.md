@@ -57,46 +57,7 @@ WeChatAndroid.weChatPay(shareOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
 ```
-## Options Keys
-* WeChat Login
-
-[scope](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L50)
-
-[state](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L49)
-
-* WeChat Share
-
-[link](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L54)
-
-[tagName](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L55)
-
-[title](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L56)
-
-[desc](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L57)
-
-[thumbImage](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L58)
-
-[scene](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L59)
-
-[dirName](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L60)
-
-[fileName](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L61)
-
-* WeChat Pay
-
-[appId](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L65)
-
-[nonceStr](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L66)
-
-[packageValue](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L67)
-
-[partnerId](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L68)
-
-[prepayId](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L69)
-
-[timeStamp](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L70)
-
-[sign](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L71)
+## [Options Keys](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L48-L72)
 
 ## 安装及使用方法 / Installation and How to use
 #### 第一步 : 安装npm包 / Step 1 - NPM Install
