@@ -57,7 +57,7 @@ WeChatAndroid.weChatPay(shareOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
 ```
-## [Options Keys](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L48-L72)
+[options](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L48-L72)
 
 ## 安装及使用方法 / Installation and How to use
 #### 第一步 : 安装npm包 / Step 1 - NPM Install
