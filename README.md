@@ -1,7 +1,102 @@
 # react-native-wechat-android
-react-native 的微信SDK辅助包，目前仅支持微信登录。
+react-native 的微信SDK辅助包，目前提供调用微信支付的方法[weChatPay](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L309-L363)，返回处理可以参考[微信开放平台微信支付功能](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317784&token=ac2c2797aab719b69c622e37880298e1fc7638b0&lang=zh_CN)自行完善，需要在wxapi包中添加WXPayEntryActivity.java类来处理。
 
-The WeChat sdk help library for react-native , currently only support wechat login .
+The WeChat sdk help library for react-native , currently provides call wechat payment method [weChatPay] (https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java # L309-L363), returns to the process can refer to [ micro-channel micro-channel open platform payment functions ] (https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317784&token=ac2c2797aab719b69c622e37880298e1fc7638b0&lang = zh_CN) self- improvement , need to add in wxapi package WXPayEntryActivity.java class to handle .
+
+## 提供以下方法 / Method
+
+* registerApp(appId,callback)
+ 
+```javascript
+WeChatAndroid.registerApp(appId,(registerOK) => {
+ ToastAndroid.show(registerOK + '',ToastAndroid.SHORT);
+});
+```
+
+* isWXAppInstalled(callback,errCallback)
+```javascript
+WeChatAndroid.isWXAppInstalled(
+ (isInstalled) => {
+    ToastAndroid.show(isInstalled + '',ToastAndroid.SHORT);
+ },
+ (err) => {
+  ToastAndroid.show(err,ToastAndroid.SHORT);
+ }
+);
+```
+
+* isWXAppSupportAPI(callback,errCallback)
+```javascript
+WeChatAndroid.isWXAppSupportAPI(
+ (isSupport) => {
+  ToastAndroid.show(isSupport + '',ToastAndroid.SHORT);
+ },
+ (err) => {
+  ToastAndroid.show(err,ToastAndroid.SHORT);
+ }
+);
+```
+
+* sendAuthReq(options,errCallback)
+```javascript
+WeChatAndroid.sendAuthReq(null,(err) => {
+ ToastAndroid.show(err,ToastAndroid.SHORT);
+});
+```
+
+* sendLinkURL(options,errCallback)
+```javascript
+WeChatAndroid.sendLinkURL(shareOptions,(err) => {
+ ToastAndroid.show(err,ToastAndroid.SHORT);
+});
+```
+
+* weChatPay(options,errCallback)
+```javascript
+WeChatAndroid.weChatPay(shareOptions,(err) => {
+ ToastAndroid.show(err,ToastAndroid.SHORT);
+});
+```
+## Options Keys
+* WeChat Login
+
+[scope](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L50)
+
+[state](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L49)
+
+* WeChat Share
+
+[link](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L54)
+
+[tagName](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L55)
+
+[title](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L56)
+
+[desc](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L57)
+
+[thumbImage](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L58)
+
+[scene](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L59)
+
+[dirName](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L60)
+
+[fileName](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L61)
+
+* WeChat Pay
+
+[appId](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L65)
+
+[nonceStr](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L66)
+
+[packageValue](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L67)
+
+[partnerId](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L68)
+
+[prepayId](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L69)
+
+[timeStamp](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L70)
+
+[sign](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L71)
 
 ## 安装及使用方法 / Installation and How to use
 #### 第一步 : 安装npm包 / Step 1 - NPM Install
@@ -128,34 +223,52 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
     @Override
     public void onResp(BaseResp baseResp) {
         int errCode = baseResp.errCode;
-        String code;
-        String state;
-        switch (errCode) {
-            case BaseResp.ErrCode.ERR_OK:
-                //用户同意 / user agree
-                code = ((SendAuth.Resp) baseResp).code;
-                state = ((SendAuth.Resp) baseResp).state;
-                break;
-            case BaseResp.ErrCode.ERR_AUTH_DENIED:
-                //用户拒绝授权 / user refuse authorize
-            case BaseResp.ErrCode.ERR_USER_CANCEL:
-                //用户取消 / user cancel
-            default:
-                code = "";
-                state = "";
-                break;
-        }
         WritableMap params = Arguments.createMap();
         WritableMap map = Arguments.createMap();
-        map.putInt("errCode", errCode); @
-        map.putString("code", code);    @
-        map.putString("state", state);  @
-        params.putMap("response", map); @
-        WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                .emit("didRecvAuthResponse", params); @
+        if (WeChatModule.currentAction.equals(WeChatModule.ACTION_LOGIN)) {
+            map.putInt("errCode", errCode);
+            switch (errCode) {
+                case BaseResp.ErrCode.ERR_OK:
+                    //用户同意
+                    String code = ((SendAuth.Resp) baseResp).code;
+                    String state = ((SendAuth.Resp) baseResp).state;
+     @              map.putString("code", code);                        
+     @              map.putString("state", state);
+     @              map.putBoolean("success", true);
+                    break;
+                case BaseResp.ErrCode.ERR_AUTH_DENIED:
+                    //用户拒绝授权
+                case BaseResp.ErrCode.ERR_USER_CANCEL:
+                    //用户取消
+                default:
+                    //其他情况
+     @              map.putBoolean("success", false);
+                    break;
+            }
+     @       params.putMap("response", map);
+            WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+     @              .emit("finishedAuth", params);
+        }else{
+            switch (errCode) {
+                case BaseResp.ErrCode.ERR_OK:
+     @              map.putBoolean("success", true);
+                    break;
+                case BaseResp.ErrCode.ERR_COMM://一般错误
+                case BaseResp.ErrCode.ERR_USER_CANCEL://用户取消
+                case BaseResp.ErrCode.ERR_SENT_FAILED://发送失败
+                case BaseResp.ErrCode.ERR_AUTH_DENIED://认证被否决
+                case BaseResp.ErrCode.ERR_UNSUPPORT://不支持错误
+                default:
+     @              map.putBoolean("success", false);
+                    break;
+            }
+     @      params.putMap("response", map);
+            WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+     @              .emit("finishedShare", params); @
+        }
         finish();
-      
-        // @所标记的key可以自由更改,对应你的js文件的key即可 / @ the key tag can be changed freely, and you can do the key of your JS file.
+    }
+    // @所标记的key可以根据需要自行更改,对应你js文件中的key即可 / @ the key tag can be changed freely, and you can do the key of your JS file.
 }
 ```
 
@@ -181,7 +294,19 @@ var {
 var WeChatAndroid = require('react-native-wechat-android');
 
 var appId = 'wx...';   // 你的AppId / you AppId
-var state = '12344214';  //用于保持请求和回调的状态，授权请求后原样带回给第三方。该参数可用于防止csrf攻击（跨站请求伪造攻击），建议第三方带上该参数，可设置为简单的随机数加session进行校验 / Used to maintain the status of the request and the callback, the authorization request is returned to the third party. This parameter can be used to prevent CSRF attacks (CSRF attack), proposed third party with the parameter can be set to a simple random number with session check
+
+var shareOptions = {
+  link: 'https://github.com/beefe/react-native-wechat-android',
+  tagName: 'test tagName',
+  title: 'test title',
+  desc: 'test desc',
+  thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
+  scene: '',
+ 
+  dirName: 'shareCache',  
+  fileName: 'temp.png',
+};
+
 
 var MyProject = React.createClass({
   _registerApp(){
@@ -197,35 +322,64 @@ var MyProject = React.createClass({
         }else{
           ToastAndroid.show('未安装 / not installed',ToastAndroid.SHORT);
         }
+      },
+      (err) => {
+        ToastAndroid.show(err,ToastAndroid.SHORT);
+      },
+    );
+  },
+  _isWXAppSupportAPI(){
+    WeChatAndroid.isWXAppSupportAPI(
+      (isSupport) => {
+        ToastAndroid.show(isSupport + '',ToastAndroid.SHORT);
+      },
+      (err) => {
+        ToastAndroid.show(err,ToastAndroid.SHORT);
       }
     );
   },
   _sendAuthRequest(){
-    WeChatAndroid.sendAuthReq(state);
+    WeChatAndroid.sendAuthReq(null,(err) => {
+       ToastAndroid.show(err,ToastAndroid.SHORT);
+    });
+  },
+  _sendToSession(){
+    shareOptions.scene = 0;
+    WeChatAndroid.sendLinkURL(shareOptions,(err) => {
+      ToastAndroid.show(err,ToastAndroid.SHORT);
+    });
+  },
+  _sendToTimeline(){
+    shareOptions.scene = 1;
+    WeChatAndroid.sendLinkURL(shareOptions,(err) => {
+      ToastAndroid.show(err,ToastAndroid.SHORT);
+    });
+  },
+  _sendToFavorite(){
+    shareOptions.scene = 2;
+    WeChatAndroid.sendLinkURL(shareOptions,(err) => {
+      ToastAndroid.show(err,ToastAndroid.SHORT);
+    });
   },
   componentWillMount: function(){
-    DeviceEventEmitter.addListener('didRecvAuthResponse',function(event){
-      var errCode = event.response.errCode;
-      switch(errCode){
-        case 0:
-          // 授权成功 / authorize success
-          ToastAndroid.show(
+    DeviceEventEmitter.addListener('finishedAuth',function(event){
+      var success = event.response.success;
+      if(success){
+         ToastAndroid.show(
             ' code = ' + JSON.stringify(event.response.code) + 
             ' state = ' + JSON.stringify(event.response.state),
             ToastAndroid.LONG
           );
-          break;  
-        case -2:
-          // 用户取消授权 / user cancel authorize
-          ToastAndroid.show('授权已取消 / authorize canceled ',ToastAndroid.SHORT);
-          break;
-        case -4:
-          // 用户拒绝授权 / user refuse authorize
-          ToastAndroid.show('授权被拒绝 / authorize to be rejected',ToastAndroid.SHORT);
-          break;
-        default:
-          ToastAndroid.show('未知错误 / unknown error ',ToastAndroid.SHORT);
-          break;
+      }else{
+        ToastAndroid.show('授权失败',ToastAndroid.SHORT);
+      }
+    });
+    DeviceEventEmitter.addListener('finishedShare',function(event){
+      var success = event.response.success;
+      if(success){
+        ToastAndroid.show('分享成功',ToastAndroid.SHORT);
+      }else{
+        ToastAndroid.show('分享失败',ToastAndroid.SHORT);
       }
     });
   },
@@ -238,8 +392,20 @@ var MyProject = React.createClass({
         <Text style={styles.text} onPress={this._isWXAppInstalled} >
           是否安装微信 / Is the installation of WeChat
         </Text>
+        <Text style={styles.text} onPress={this._isWXAppSupportAPI} >
+          是否微信支持的API
+        </Text>
         <Text style={styles.text} onPress={this._sendAuthRequest} >
           微信登录 / WeChat login
+        </Text>
+        <Text style={styles.text} onPress={this._sendToSession} >
+          分享给朋友 / WeChat share to session
+        </Text>
+        <Text style={styles.text} onPress={this._sendToTimeline} >
+          分享到朋友圈 / WeChat share to timeline
+        </Text>
+        <Text style={styles.text} onPress={this._sendToFavorite} >
+          分享到收藏 / WeChat share to favorite
         </Text>
       </View>
     );
@@ -264,18 +430,28 @@ var styles = StyleSheet.create({
 AppRegistry.registerComponent('MyProject', () => MyProject);
 
 ```
+//dirName和fileName为分享时缩略图的[缓存配置](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L199-L239)，如果需要指定缓存的文件夹名称和缓存文件名，可以加上这两个属性，文件夹默认放在sd卡根目录，dirName支持多层目录，比如"myapp/shareCache"
+   //dirName and fileName to share the thumbnail of [ cache configuration ] (https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule. java # L199-L239), if you need to specify the folder name cache and cache file name, you can add these two properties , the default folders on the sd card root directory , dirName supports multiple directories , such as "myapp / shareCache"
 
 ## Run Renderings
 <center>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/screenshotone.jpeg"
+    <img src="https://github.com/beefe/react-native-wechat-android/tree/master/ScreenShot/login_success.jpeg"
     width="300" height="450"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/screenshottwo.jpeg"
+    <img src="https://github.com/beefe/react-native-wechat-android/tree/master/ScreenShot/wait_auth.jpeg"
     width="300" height="450"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/screenshotthree.jpeg"
+    <img src="https://github.com/beefe/react-native-wechat-android/tree/master/ScreenShot/session.jpg"
     width="300" height="450"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/screenshotfour.jpeg"
+    <img src="https://github.com/beefe/react-native-wechat-android/tree/master/ScreenShot/timeline.jpeg"
+    width="300" height="450"/>
+    <img src="https://github.com/beefe/react-native-wechat-android/tree/master/ScreenShot/favorite.jpeg"
+    width="300" height="450"/>
+    <img src="https://github.com/beefe/react-native-wechat-android/tree/master/ScreenShot/favorite_list.jpeg"
+    width="300" height="450"/>
+    <img src="https://github.com/beefe/react-native-wechat-android/tree/master/ScreenShot/local.jpeg"
     width="300" height="450"/>
 </center>
+
+## [Demo download](https://github.com/beefe/react-native-wechat-android/blob/master/apk/qianlonglaile.apk?raw=true)
 
 ## Notes
 打包apk请参考[Generating Signed APK](http://facebook.github.io/react-native/docs/signed-apk-android.html#content)
