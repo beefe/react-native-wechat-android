@@ -435,20 +435,20 @@ AppRegistry.registerComponent('MyProject', () => MyProject);
 
 ## Run Renderings
 <center>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/login_success.jpeg"
-    width="300" height="450"/>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/wait_auth.jpeg"
     width="300" height="450"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/session.jpg"
+    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/login_success.jpeg"
     width="300" height="450"/>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/timeline.jpeg"
     width="300" height="450"/>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/favorite.jpeg"
     width="300" height="450"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/favorite_list.jpeg"
-    width="300" height="450"/>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/local.jpeg"
     width="300" height="450"/>
+    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/favorite_list.jpeg"
+    width="300" height="180"/>
+    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/session.jpg"
+    width="260" height="260"/>
 </center>
 
 ## [Demo download](https://github.com/beefe/react-native-wechat-android/blob/master/apk/qianlonglaile.apk?raw=true)
