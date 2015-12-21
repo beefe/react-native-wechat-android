@@ -1,5 +1,7 @@
 var React = require('react-native');
 
-var { NativeModules  } = React;
+var { NativeModules } = React;
 
-module.exports = NativeModules.WeChatAndroid;
+var WeChatAndroid = NativeModules.WeChatAndroid;
+
+module.exports = WeChatAndroid;
