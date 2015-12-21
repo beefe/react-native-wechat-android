@@ -445,7 +445,7 @@ AppRegistry.registerComponent('MyProject', () => MyProject);
     width="300" height="450"/>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/local.jpeg"
     width="300" height="450"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/favorite_list.jpeg"
+    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/favorite_list.jpg"
     width="300" height="180"/>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/session.jpg"
     width="260" height="260"/>
