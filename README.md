@@ -1,7 +1,7 @@
 # react-native-wechat-android
-react-native 的微信SDK辅助包，目前提供调用微信支付的方法[weChatPay](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L309-L363)，返回处理可以参考[微信开放平台微信支付功能](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317784&token=ac2c2797aab719b69c622e37880298e1fc7638b0&lang=zh_CN)自行完善，需要在wxapi包中添加WXPayEntryActivity.java类来处理。
+react-native 的微信SDK辅助包，目前提供调用微信支付的方法[weChatPay](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L339-L393)，返回处理可以参考[微信开放平台微信支付功能](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317784&token=ac2c2797aab719b69c622e37880298e1fc7638b0&lang=zh_CN)自行完善，需要在wxapi包中添加WXPayEntryActivity.java类来处理。
 
-The WeChat sdk help library for react-native , currently provides call wechat payment method [weChatPay](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java # L309-L363), returns to the process can refer to [WeChat open api](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317784&token=ac2c2797aab719b69c622e37880298e1fc7638b0&lang = zh_CN) self- improvement , need to add in wxapi package WXPayEntryActivity.java class to handle .
+The WeChat sdk help library for react-native , currently provides call wechat payment method [weChatPay](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java # L339-L393), returns to the process can refer to [WeChat open api](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317784&token=ac2c2797aab719b69c622e37880298e1fc7638b0&lang = zh_CN) self- improvement , need to add in wxapi package WXPayEntryActivity.java class to handle .
 
 ## 提供以下方法 / Method
 
@@ -57,7 +57,7 @@ WeChatAndroid.weChatPay(shareOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
 ```
-[options](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L45-L75)
+[options](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L51-L75)
 
 ## 安装及使用方法 / Installation and How to use
 #### 第一步 : 安装npm包 / Step 1 - NPM Install
@@ -391,9 +391,9 @@ var styles = StyleSheet.create({
 AppRegistry.registerComponent('MyProject', () => MyProject);
 
 ```
-dirName和fileName为分享时缩略图的[缓存配置](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L238-L247)，如果需要指定缓存的文件夹名称和缓存文件名，可以加上这两个属性，文件夹默认放在sd卡根目录，dirName支持多层目录，比如"myapp/shareCache" 
+dirName和fileName为分享时缩略图的[缓存配置](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L211-L247)，如果需要指定缓存的文件夹名称和缓存文件名，可以加上这两个属性，文件夹默认放在sd卡根目录，dirName支持多层目录，比如"myapp/shareCache" 
 
-dirName and fileName to share the thumbnail of [cache configuration](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule. java # L238-L247), if you need to specify the folder name cache and cache file name, you can add these two properties , the default folders on the sd card root directory , dirName supports multiple directories , such as "myapp / shareCache"
+dirName and fileName to share the thumbnail of [cache configuration](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule. java # L211-L247), if you need to specify the folder name cache and cache file name, you can add these two properties , the default folders on the sd card root directory , dirName supports multiple directories , such as "myapp / shareCache"
 
 ## Run Renderings
 <center>
