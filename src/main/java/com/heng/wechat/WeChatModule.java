@@ -30,6 +30,9 @@ import java.net.URL;
  * <p/>
  * Edited by heng on 15/12/18
  * Added WeChat share
+ * 
+ * Edited by heng on 2015/12/22
+ * Add picture async download
  */
 public class WeChatModule extends ReactContextBaseJavaModule {
 
@@ -91,6 +94,11 @@ public class WeChatModule extends ReactContextBaseJavaModule {
 
     File localFile;
 
+    /**  Added by heng on 2015/12/22  */
+    public static final int DOWNLOAD_OK = 0;
+    public static final int DOWNLOAD_FAIL = 1;
+    Handler handler;
+    /**  Added by heng on 2015/12/22  */
 
     public WeChatModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -237,12 +245,34 @@ public class WeChatModule extends ReactContextBaseJavaModule {
         if(localFile.exists()){
             localFile.delete();
         }
-        boolean downloadOk = downloadShareImage(thumbImage, localFile);
-        if (downloadOk) {
-            weChatShare(true);
-        } else {
-            weChatShare(false);
-        }
+        
+        /** Edited by heng on 2015/12/22 */
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case DOWNLOAD_OK:
+                        weChatShare(true);
+                        break;
+                    case DOWNLOAD_FAIL:
+                        weChatShare(false);
+                        break;
+                }
+            }
+        };
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean downloadOk = downloadShareImage(thumbImage, localFile);
+                if (downloadOk) {
+                    handler.obtainMessage(DOWNLOAD_OK).sendToTarget();
+                } else {
+                    handler.obtainMessage(DOWNLOAD_FAIL).sendToTarget();
+                }
+            }
+        }).start();
+        /** Edited by heng on 2015/12/22 */
     }
 
 
