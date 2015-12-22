@@ -393,7 +393,7 @@ AppRegistry.registerComponent('MyProject', () => MyProject);
 ```
 dirName和fileName为分享时缩略图的[缓存配置](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L211-L247)，如果需要指定缓存的文件夹名称和缓存文件名，可以加上这两个属性，文件夹默认放在sd卡根目录，dirName支持多层目录，比如"myapp/shareCache" 
 
-dirName and fileName to share the thumbnail of [cache configuration](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule. java # L211-L247), if you need to specify the folder name cache and cache file name, you can add these two properties , the default folders on the sd card root directory , dirName supports multiple directories , such as "myapp / shareCache"
+dirName and fileName to share the thumbnail of [cache configuration](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L211-L247), if you need to specify the folder name cache and cache file name, you can add these two properties , the default folders on the sd card root directory , dirName supports multiple directories , such as "myapp / shareCache"
 
 ## Run Renderings
 <center>
