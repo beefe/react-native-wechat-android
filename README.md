@@ -399,8 +399,6 @@ dirName and fileName to share the thumbnail of [cache configuration](https://git
 <center>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/wait_auth.jpeg"
     width="300" height="520"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/login_success.jpeg"
-    width="300" height="520"/>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/timeline.jpeg"
     width="300" height="520"/>
     <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/favorite.jpeg"
