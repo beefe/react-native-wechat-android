@@ -2,10 +2,7 @@ package com.heng.wechat;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
+import android.text.TextUtils;
 
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -14,27 +11,32 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
  * Created by heng on 2015/12/10.
- * <p/>
+ *
  * Edited by heng on 15/12/18
- * Added WeChat share
+ * Added share webPage and weChat Pay
  * 
  * Edited by heng on 2015/12/22
- * Add picture async download
+ * Add remote image async download
+ *
+ * Edited by heng on 2015/12/29
+ * 1.Removed Handler and Thread
+ * 2.Modify options param
+ * 3.Added share local
+ * 4.Added and remote image(分享远程图片到朋友圈和收藏都会失败,具体原因待查,建议把远程图片下载到本地来分享)
  */
 public class WeChatModule extends ReactContextBaseJavaModule {
 
@@ -61,9 +63,11 @@ public class WeChatModule extends ReactContextBaseJavaModule {
     public static final String OPTIONS_TITLE = "title";
     public static final String OPTIONS_DESC = "desc";
     public static final String OPTIONS_THUMB_IMAGE = "thumbImage";
+    public static final String OPTIONS_THUMB_SIZE = "thumbSize";
     public static final String OPTIONS_SCENE = "scene";
-    public static final String OPTIONS_SHARE_DIR_NAME = "dirName";
-    public static final String OPTIONS_SHARE_FILE_NAME = "fileName";
+    public static final String OPTIONS_LOCAL_PATH = "localPath";
+    public static final String OPTIONS_REMOTE_URL = "remoteUrl";
+    public static final String OPTIONS_IMAGE_SOURCE_TYPE = "imageSourceType";
     /*============ WeChat share options key ==============*/
 
     /*============ WeChat pay options key ==============*/
@@ -77,30 +81,21 @@ public class WeChatModule extends ReactContextBaseJavaModule {
     /*============ WeChat pay options key ==============*/
 
 
-    public static final int SCENE_SESSION = 0;
-    public static final int SCENE_TIMELINE = 1;
-    public static final int SCENE_FAVORITE = 2;
+    public static final int SCENE_SESSION = 0;          //分享到聊天界面
+    public static final int SCENE_TIMELINE = 1;         //分享到朋友圈
+    public static final int SCENE_FAVORITE = 2;         //分享到收藏
 
-    String link = "";          //分享的链接
-    String tagName = "";       //分享的标签名
-    String title = "";         //分享的标题
-    String desc = "";          //分享的描述
-    String thumbImage = "";    //分享的缩略图网络地址
-    int scene = 0;             //分享的方式(0:聊天界面，1:朋友圈，2:收藏)
-
-    String rootDirPath;        //分享的图片在本地保存的根目录路径
-    String fileDirName;        //分享的图片在本地保存的文件夹名称
-    String fileDirPath;        //分享的图片在本地保存的文件夹路径
-    String fileName;           //分享的图片在本地保存的文件名
-    String filePath;           //分享的图片在本地保存的文件路径
-
-    File localFile;
-
-    /**  Added by heng on 2015/12/22  */
-    public static final int DOWNLOAD_OK = 0;
-    public static final int DOWNLOAD_FAIL = 1;
-    Handler handler;
-    /**  Added by heng on 2015/12/22  */
+    String link = null;          //分享的网页链接
+    String tagName = null;       //分享的标签名
+    String title = null;         //分享的网页标题
+    String desc = null;          //分享的网页描述
+    String transaction = null;   //分享的描述
+    String thumbImage = null;    //分享的图片的网络地址
+    int thumbSize = 150;         //分享的缩略图大小
+    int scene = 0;               //分享的方式(0:聊天界面，1:朋友圈，2:收藏)
+    int imageSourceType = 0;     //分享的图片来源(0:本地，1:网络)
+    String localPath = null;     //分享的图片的本地路径
+    String remoteUrl = null;     //分享的图片的本地路径
 
     public WeChatModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -111,7 +106,6 @@ public class WeChatModule extends ReactContextBaseJavaModule {
     public String getName() {
         return REACT_MODULE_NAME;
     }
-
 
     @ReactMethod
     public void registerApp(String appId, Callback callback) {
@@ -174,8 +168,8 @@ public class WeChatModule extends ReactContextBaseJavaModule {
     /**
      * Added by heng on 2015/12/18
      * <p/>
+     * callback return true ? is support : not support
      * if not register WeChat appId , errCallback return error
-     * else callback return true ? is support : not support
      */
     @ReactMethod
     public void isWXAppSupportAPI(Callback callback, Callback errCallback) {
@@ -192,9 +186,10 @@ public class WeChatModule extends ReactContextBaseJavaModule {
 
     /**
      * Added by heng on 2015/12/18
-     * <p/>
-     * this method is used to be sharing to WeChat
-     * <p/>
+     * Edited by heng one 2015/12/29
+     *
+     * this method is used to share webPage to WeChat
+     *
      * errCallback return error
      */
     @ReactMethod
@@ -206,19 +201,24 @@ public class WeChatModule extends ReactContextBaseJavaModule {
             return;
         }
 
-        rootDirPath = Environment.getExternalStorageDirectory().getPath();
-        fileDirName = "share";
-        fileName = "share.jpg";
-
         if (options != null) {
             if (options.hasKey(OPTIONS_LINK)) {
                 link = options.getString(OPTIONS_LINK);
+            }else{
+                errCallback.invoke("please setting share link !");
+                return;
             }
             if (options.hasKey(OPTIONS_TAG_NAME)) {
                 tagName = options.getString(OPTIONS_TAG_NAME);
             }
+            if (options.hasKey(OPTIONS_THUMB_SIZE)) {
+                thumbSize = options.getInt(OPTIONS_THUMB_SIZE);
+            }
             if (options.hasKey(OPTIONS_TITLE)) {
                 title = options.getString(OPTIONS_TITLE);
+            }else{
+                errCallback.invoke("please setting share title !");
+                return;
             }
             if (options.hasKey(OPTIONS_DESC)) {
                 desc = options.getString(OPTIONS_DESC);
@@ -229,120 +229,79 @@ public class WeChatModule extends ReactContextBaseJavaModule {
             if (options.hasKey(OPTIONS_SCENE)) {
                 scene = options.getInt(OPTIONS_SCENE);
             }
-            if (options.hasKey(OPTIONS_SHARE_DIR_NAME)) {
-                fileDirName = options.getString(OPTIONS_SHARE_DIR_NAME);
+            shareWebPage(thumbImage);
+        } else {
+            if (errCallback != null) {
+                errCallback.invoke("please setting options !");
             }
-            if (options.hasKey(OPTIONS_SHARE_FILE_NAME)) {
-                fileName = options.getString(OPTIONS_SHARE_FILE_NAME);
+        }
+    }
+
+    /**
+     * Added by buhe on 2015/12/29
+     *
+     * Edited by heng on 2015/12/29
+     *
+     * this method is used to share image to WeChat
+     * errCallback return error
+     */
+    @ReactMethod
+    public void sendImage(ReadableMap options, Callback errCallback) {
+        if (WeChatModule.wxApi == null) {
+            if (errCallback != null) {
+                errCallback.invoke("please registerApp before this !");
             }
+            return;
         }
 
-        fileDirPath = rootDirPath + File.separator + fileDirName;
-        filePath = fileDirPath + File.separator + fileName;
-        File fileDir = new File(fileDirPath);
-        if(!fileDir.exists()){
-            fileDir.mkdirs();
-        }
-        localFile = new File(fileDirPath, fileName);
-        if(localFile.exists()){
-            localFile.delete();
-        }
-        
-        /** Edited by heng on 2015/12/22 */
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case DOWNLOAD_OK:
-                        weChatShare(true);
-                        break;
-                    case DOWNLOAD_FAIL:
-                        weChatShare(false);
-                        break;
+        if (options != null) {
+            if(options.hasKey(OPTIONS_IMAGE_SOURCE_TYPE)){
+                imageSourceType = options.getInt(OPTIONS_IMAGE_SOURCE_TYPE);
+            }
+            if (options.hasKey(OPTIONS_SCENE)) {
+                scene = options.getInt(OPTIONS_SCENE);
+            }
+            if (options.hasKey(OPTIONS_THUMB_SIZE)) {
+                thumbSize = options.getInt(OPTIONS_THUMB_SIZE);
+            }
+            if(imageSourceType == 0){
+                if (options.hasKey(OPTIONS_LOCAL_PATH)) {
+                    localPath = options.getString(OPTIONS_LOCAL_PATH);
+                    File file = new File(localPath);
+                    if(file.exists()){
+                        shareLocalImage();
+                    } else {
+                        if (errCallback != null) {
+                            errCallback.invoke("the local path is not found file !");
+                        }
+                    }
+                }else{
+                    if (errCallback != null) {
+                        errCallback.invoke("please setting image local path !");
+                    }
+                }
+            }else{
+                if (options.hasKey(OPTIONS_REMOTE_URL)) {
+                    remoteUrl = options.getString(OPTIONS_REMOTE_URL);
+                    shareRemoteImage();
+                }else{
+                    if (errCallback != null) {
+                        errCallback.invoke("please setting image remote path !");
+                    }
                 }
             }
-        };
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                boolean downloadOk = downloadShareImage(thumbImage, localFile);
-                if (downloadOk) {
-                    handler.obtainMessage(DOWNLOAD_OK).sendToTarget();
-                } else {
-                    handler.obtainMessage(DOWNLOAD_FAIL).sendToTarget();
-                }
+        } else {
+            if (errCallback != null) {
+                errCallback.invoke("please setting options !");
             }
-        }).start();
-        /** Edited by heng on 2015/12/22 */
-    }
-
-
-    void weChatShare(boolean hasThumb) {
-        WXWebpageObject webPage = new WXWebpageObject();
-        webPage.webpageUrl = link;
-        WXMediaMessage msg = new WXMediaMessage(webPage);
-        msg.mediaTagName = tagName;
-        msg.title = title;
-        msg.description = desc;
-        if (hasThumb) {
-            Bitmap bitmap = getLocalPic();
-            msg.setThumbImage(bitmap);
         }
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = String.valueOf(System.currentTimeMillis());
-        req.message = msg;
-        switch (scene) {
-            case SCENE_SESSION:
-                req.scene = SendMessageToWX.Req.WXSceneSession;
-                break;
-            case SCENE_TIMELINE:
-                req.scene = SendMessageToWX.Req.WXSceneTimeline;
-                break;
-            case SCENE_FAVORITE:
-                req.scene = SendMessageToWX.Req.WXSceneFavorite;
-                break;
-        }
-        WeChatModule.currentAction = ACTION_SHARE;
-        WeChatModule.wxApi.sendReq(req);
-    }
-
-    Bitmap getLocalPic() {
-        Bitmap bitmap = null;
-        if (localFile.exists()) {
-            bitmap = BitmapFactory.decodeFile(filePath);
-            bitmap = ThumbnailUtils.extractThumbnail(bitmap, 100, 100);
-        }
-        return bitmap;
-    }
-
-
-    boolean downloadShareImage(String sourceUrl, File file) {
-        try {
-            URL url = new URL(sourceUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            InputStream is = conn.getInputStream();
-            FileOutputStream fos = new FileOutputStream(file);
-            byte[] buffer = new byte[1024];
-            int len;
-            while ((len = is.read(buffer)) > 0) {
-                fos.write(buffer, 0, len);
-            }
-            fos.flush();
-            fos.close();
-            is.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 
     /**
      * Added by heng on 2015/12/18
      * <p/>
      * WeChat pay method
-     * if not register WeChat appId , errCallback return error
+     * errCallback return error
      */
     @ReactMethod
     public void weChatPay(ReadableMap options, Callback errCallback) {
@@ -393,4 +352,115 @@ public class WeChatModule extends ReactContextBaseJavaModule {
         request.sign = sign;
         WeChatModule.wxApi.sendReq(request);
     }
+
+    /**
+     * Added by heng on 2015/12/29
+     *
+     * share web page
+     */
+    void shareWebPage(String thumbImage){
+        WXWebpageObject webPage = new WXWebpageObject();
+        webPage.webpageUrl = link;
+        try {
+            WXMediaMessage msg = new WXMediaMessage(webPage);
+            Bitmap bitmap = BitmapFactory.decodeStream(new URL(thumbImage).openStream());
+            weChatShare(msg, bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Added by heng on 2015/12/29
+     *
+     * share local image
+     */
+    void shareLocalImage(){
+        WXImageObject wxImageObject = new WXImageObject();
+        wxImageObject.setImagePath(localPath);
+
+        Bitmap bitmap = BitmapFactory.decodeFile(localPath);
+        WXMediaMessage msg = new WXMediaMessage(wxImageObject);
+        weChatShare(msg, bitmap);
+    }
+
+    /**
+     * Added by heng on 2015/12/29
+     *
+     * share remote image
+     */
+    void shareRemoteImage(){
+        WXImageObject wxImageObject = new WXImageObject();
+        wxImageObject.imageUrl = remoteUrl;
+        try {
+            WXMediaMessage msg = new WXMediaMessage(wxImageObject);
+            Bitmap bitmap = BitmapFactory.decodeStream(new URL(remoteUrl).openStream());
+            weChatShare(msg, bitmap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Added by heng on 2015/12/29
+     *
+     * weChat share
+     */
+    void weChatShare(WXMediaMessage msg,Bitmap bitmap) {
+        if(!TextUtils.isEmpty(tagName)){
+            msg.mediaTagName = tagName;
+        }
+        if(!TextUtils.isEmpty(title)){
+            msg.title = title;
+        }
+        if(!TextUtils.isEmpty(desc)){
+            msg.description = desc;
+        }
+        if (bitmap != null) {
+            Bitmap thumbBmp = Bitmap.createScaledBitmap(bitmap, thumbSize, thumbSize, true);
+            bitmap.recycle();
+            msg.thumbData = bmpToByteArray(thumbBmp, true);
+        }
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        if(!TextUtils.isEmpty(transaction)){
+            req.transaction = transaction;
+        }else{
+            req.transaction = String.valueOf(System.currentTimeMillis());
+        }
+        req.message = msg;
+        switch (scene) {
+            case SCENE_SESSION:
+                req.scene = SendMessageToWX.Req.WXSceneSession;
+                break;
+            case SCENE_TIMELINE:
+                req.scene = SendMessageToWX.Req.WXSceneTimeline;
+                break;
+            case SCENE_FAVORITE:
+                req.scene = SendMessageToWX.Req.WXSceneFavorite;
+                break;
+        }
+        WeChatModule.currentAction = ACTION_SHARE;
+        WeChatModule.wxApi.sendReq(req);
+    }
+
+    /**
+     * Added by heng on 2015/12/29
+     *
+     * Bitmap to byte array
+     */
+    byte[] bmpToByteArray(Bitmap bmp, boolean needRecycle) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
+        if (needRecycle) {
+            bmp.recycle();
+        }
+        byte[] result = output.toByteArray();
+        try {
+            output.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
 }
