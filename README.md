@@ -82,11 +82,39 @@ var authOptions = {
 WeChatAndroid.sendAuthReq(authOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
+
+// 处理登录回调结果
+DeviceEventEmitter.addListener('finishedAuth',function(event){
+ var success = event.response.success;
+  if(success){
+   ToastAndroid.show(
+    ' code = ' + JSON.stringify(event.response.code) + 
+    ' state = ' + JSON.stringify(event.response.state),
+    ToastAndroid.LONG
+   );
+  }else{
+   ToastAndroid.show('授权失败',ToastAndroid.SHORT);
+  }
+});
 ```
 or
 ```javascript
 WeChatAndroid.sendAuthReq(null,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
+});
+
+// 处理登录回调结果
+DeviceEventEmitter.addListener('finishedAuth',function(event){
+ var success = event.response.success;
+  if(success){
+   ToastAndroid.show(
+    ' code = ' + JSON.stringify(event.response.code) + 
+    ' state = ' + JSON.stringify(event.response.state),
+    ToastAndroid.LONG
+   );
+  }else{
+   ToastAndroid.show('授权失败',ToastAndroid.SHORT);
+  }
 });
 ```
 
@@ -111,6 +139,16 @@ var shareWebPageOptions = {
 WeChatAndroid.sendLinkURL(shareWebPageOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
+
+// 处理分享回调结果
+DeviceEventEmitter.addListener('finishedShare',function(event){
+ var success = event.response.success;
+ if(success){
+  ToastAndroid.show('分享成功',ToastAndroid.SHORT);
+ }else{
+  ToastAndroid.show('分享失败',ToastAndroid.SHORT);
+ }
+});
 ```
 
 ### sendImage(options,errCallback)
@@ -132,6 +170,16 @@ var shareLocalImageOptions = {
 WeChatAndroid.sendImage(shareLocalImageOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
+
+// 处理分享回调结果
+DeviceEventEmitter.addListener('finishedShare',function(event){
+ var success = event.response.success;
+ if(success){
+  ToastAndroid.show('分享成功',ToastAndroid.SHORT);
+ }else{
+  ToastAndroid.show('分享失败',ToastAndroid.SHORT);
+ }
+});
 ```
 
 分享网络图片：(分享网络图片到朋友圈和收藏都会失败,具体原因待查,建议把网络图片下载到本地来分享)
@@ -145,6 +193,16 @@ var shareRemoteImageOptions = {
 
 WeChatAndroid.sendImage(shareRemoteImageOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
+});
+
+// 处理分享回调结果
+DeviceEventEmitter.addListener('finishedShare',function(event){
+ var success = event.response.success;
+ if(success){
+  ToastAndroid.show('分享成功',ToastAndroid.SHORT);
+ }else{
+  ToastAndroid.show('分享失败',ToastAndroid.SHORT);
+ }
 });
 ```
 
@@ -169,6 +227,16 @@ var payOptions = {
 
 WeChatAndroid.weChatPay(payOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
+});
+
+//  处理支付回调结果
+DeviceEventEmitter.addListener('finishedPay',function(event){
+ var success = event.response.success;
+ if(success){
+  // 在此发起网络请求由服务器验证是否真正支付成功，然后做出相应的处理
+ }else{
+  ToastAndroid.show('支付失败',ToastAndroid.SHORT);
+ }
 });
 ```
 
