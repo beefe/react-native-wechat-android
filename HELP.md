@@ -1,13 +1,12 @@
-#### 第一步 : 安装npm包 / Step 1 - NPM Install
+#### 第一步 : 安装npm包
 
 ```shell
 npm install --save react-native-wechat-android
 ```
-#### 第二步 : 更新settings.gradle / Step 2 - Update Gradle Settings
+#### 第二步 : 更新settings.gradle
 
 ```gradle
 // 文件路径：android/settings.gradle 
-// file: android/settings.gradle
 
 ...
 
@@ -15,7 +14,6 @@ include ':reactwechat', ':app'
 project(':reactwechat').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-wechat-android')
 
 // 如果有其他的library，这样添加：
-// if there are more library , add this:
  
 // include ':app' , ':libraryone' , ':librarytwo' , 'more...'
 // project(':libraryonename').projectDir = new File(rootProject.projectDir, '../node_modules/libraryonemodule')
@@ -23,7 +21,7 @@ project(':reactwechat').projectDir = new File(rootProject.projectDir, '../node_m
 // more..
 ```
 
-#### 第三步 : 更新app的build.gradle / Step 3 - Update app Gradle Build
+#### 第三步 : 更新app的build.gradle
 
 ```gradle
 // 文件路径：android/app/build.gradle
@@ -36,7 +34,7 @@ dependencies {
 }
 ```
 
-#### 第四步 : 注册包 / Step 4 - Register React Package
+#### 第四步 : 注册包
 
 ```java
 ...
@@ -66,15 +64,12 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 
 ```
 
-#### 第五步 : 添加微信SDK / Step 5 Add WeChat SDK
+#### 第五步 : 添加微信SDK
 把wechat/libs/libammsdk.jar复制到android/app/libs文件夹下，或者去微信开放平台的资源中心 点击[Android资源下载](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419319167)下载[Android开发工具包](https://res.wx.qq.com/open/zh_CN/htmledition/res/dev/download/sdk/Android2_SDK238f8d.zip)
 
-copy wechat/libs/libammsdk.jar to android/app/libs , or go WeChat open resource center click [Android资源下载](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419319167) to download [Android开发工具包](https://res.wx.qq.com/open/zh_CN/htmledition/res/dev/download/sdk/Android2_SDK238f8d.zip)
 
-#### 第六步 : 添加WXEntryActivity并在AndroidManifest.xml中注册 / Step 6 - Add WXEntryActivity and register in AndroidManifest.xml
-在你的包名相应目录下新建一个wxapi目录，并在该wxapi目录下创建一个WXEntryActivity类，该类继承自Activity（例如应用程序的包名为com.heng，则WXEntryActivity应该位于com.heng.wxapi包下）,并在AndroidManifest.xml文件中添加如下代码：
-
-Create a wxapi directory in your package name, and create a WXEntryActivity class in the wxapi directory, which is inherited from the Activity (for example, the package name is com.heng, then the WXEntryActivity should be located in the com.heng.wxapi), and add the following code in the AndroidManifest.xml file
+#### 第六步 : 添加微信回调类
+在你的包名相应目录下创建回调类的目录，例如应用程序的包名为com.heng,在该目录应该为com.heng.wxapi(微信指定的回调路径，不能更改,否则无法获取回调结果),并在该wxapi目录下创建WXEntryActivity.java（微信登录和微信分享的回调类）和WXPayEntryActivity.java（微信支付的回调类，如果没有微信支付功能不需要此类）,并在AndroidManifest.xml文件中添加如下代码：
 
 ```xml
  ...
@@ -85,16 +80,20 @@ Create a wxapi directory in your package name, and create a WXEntryActivity clas
  ...
 
  ...
-  <activity
-    android:name=".wxapi.WXEntryActivity"
-     android:exported="true"
-     android:theme="@android:style/Theme.Translucent.NoTitleBar" 
-   />
+ <activity
+  android:name=".wxapi.WXEntryActivity"
+  android:exported="true"
+  android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+ <activity
+  android:name=".wxapi.WXPayEntryActivity"
+  android:exported="true"
+  android:theme="@android:style/Theme.Translucent.NoTitleBar" />
  ...
 ```
 
-#### 第七步 : 为添加的WXEntryActivity实现IWXAPIEventHandler接口及相应的方法 / Step 7 -  To add the WXEntryActivity to achieve the IWXAPIEventHandler interface and the corresponding method
+#### 第七步 : 在微信回调类里进行相应的回调处理 
 
+WXEntryActivity.java :
 ```java
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
@@ -167,19 +166,67 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         }
         finish();
     }
-    // @所标记的key可以根据需要自行更改,对应你js文件中的key即可 / @ the key tag can be changed freely, and you can do the key of your JS file.
+    // @所标记的key可以根据需要自行更改,对应你js文件中的key即可 
+}
+```
+
+WXPayEntryActivity.java :
+
+```java
+public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
+
+    Context context;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        context = this;
+        WeChatModule.wxApi.handleIntent(getIntent(), this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        WeChatModule.wxApi.handleIntent(intent, this);
+    }
+
+    @Override
+    public void onReq(BaseReq baseReq) {
+
+    }
+
+    @Override
+    public void onResp(BaseResp resp) {
+        if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
+            int errCode = resp.errCode;
+            WritableMap params = Arguments.createMap();
+            WritableMap map = Arguments.createMap();
+            switch (errCode) {
+                case BaseResp.ErrCode.ERR_OK:
+     @              map.putBoolean("success", true);
+                    break;
+                default:
+     @              map.putBoolean("success", false);
+                    break;
+            }
+      @     map.putInt("errCode", errCode);
+      @     params.putMap("response", map);
+            WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+      @            .emit("finishedPay", params);
+        }
+        finish();
+    }
+    // @所标记的key可以根据需要自行更改,对应你js文件中的key即可 
 }
 ```
 
 
-#### 第八步 : 在你的JS文件中使用  /  Step 8 - Require and use in Javascript
+#### 第八步 : 在你的JS文件中使用 
 
-```js
+```javascript
 // 比如在index.android.js中使用
-// example : index.android.js
-
 'use strict';
-
 var React = require('react-native');
 var {
   AppRegistry,
@@ -192,7 +239,7 @@ var {
 
 var WeChatAndroid = require('react-native-wechat-android');
 
-var appId = 'wx...';   // 你的AppId / you AppId
+var appId = 'wx...';   // 你的AppId 
 
 var shareWebPageOptions = {
   link: 'https://github.com/beefe/react-native-wechat-android', //分享的网页的链接
@@ -313,6 +360,14 @@ var MyProject = React.createClass({
         ToastAndroid.show('分享失败',ToastAndroid.SHORT);
       }
     });
+//    DeviceEventEmitter.addListener('finishedPay',function(event){
+//      var success = event.response.success;
+//      if(success){
+//        // 在此发起网络请求由服务器验证是否真正支付成功，然后做出相应的处理
+//      }else{
+//        ToastAndroid.show('支付失败',ToastAndroid.SHORT);
+//      }
+//    });
   },
   render: function() {
     return (
