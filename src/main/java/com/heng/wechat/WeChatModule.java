@@ -337,6 +337,65 @@ public class WeChatModule extends ReactContextBaseJavaModule {
         }
         return true;
     }
+    
+    /**
+    * <p/>
+    * this method is used to be sharing image to WeChat
+    * <p/>
+    * errCallback return error
+    */
+   @ReactMethod
+   public void sendImage(ReadableMap options, Callback errCallback) {
+       if (WeChatModule.wxApi == null) {
+           if (errCallback != null) {
+               errCallback.invoke("please registerApp before this !");
+           }
+           return;
+       }
+
+       if (options != null) {
+           if (options.hasKey(OPTIONS_PATH)) {
+               path = options.getString(OPTIONS_PATH);
+           }
+           if (options.hasKey(OPTIONS_TAG_NAME)) {
+               tagName = options.getString(OPTIONS_TAG_NAME);
+           }
+           if (options.hasKey(OPTIONS_TITLE)) {
+               title = options.getString(OPTIONS_TITLE);
+           }
+           if (options.hasKey(OPTIONS_DESC)) {
+               desc = options.getString(OPTIONS_DESC);
+           }
+           if (options.hasKey(OPTIONS_SCENE)) {
+               scene = options.getInt(OPTIONS_SCENE);
+           }
+       }
+
+       WXImageObject wxImageObject = new WXImageObject();
+       wxImageObject.imagePath = path;
+       WXMediaMessage msg = new WXMediaMessage(wxImageObject);
+       msg.mediaTagName = tagName;
+       msg.title = title;
+       msg.description = desc;
+
+       SendMessageToWX.Req req = new SendMessageToWX.Req();
+       req.transaction = String.valueOf(System.currentTimeMillis());
+       req.message = msg;
+       switch (scene) {
+           case SCENE_SESSION:
+               req.scene = SendMessageToWX.Req.WXSceneSession;
+               break;
+           case SCENE_TIMELINE:
+               req.scene = SendMessageToWX.Req.WXSceneTimeline;
+               break;
+           case SCENE_FAVORITE:
+               req.scene = SendMessageToWX.Req.WXSceneFavorite;
+               break;
+       }
+       WeChatModule.currentAction = ACTION_SHARE;
+       WeChatModule.wxApi.sendReq(req);
+   }
+
 
     /**
      * Added by heng on 2015/12/18

@@ -51,6 +51,13 @@ WeChatAndroid.sendLinkURL(shareOptions,(err) => {
 });
 ```
 
+* sendImage(options,errCallback)
+```javascript
+WeChatAndroid.sendImage(shareOptions,(err) => {
+ ToastAndroid.show(err,ToastAndroid.SHORT);
+});
+```
+
 * weChatPay(options,errCallback)
 ```javascript
 WeChatAndroid.weChatPay(shareOptions,(err) => {
