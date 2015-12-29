@@ -4,7 +4,7 @@ react-native 的微信SDK辅助包，支持微信登录、微信分享、微信�
 
 ## 提供以下方法 / Method
 
-* [registerApp](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#registerappappIdcallback)
+* [registerApp](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#registerappappidcallback)
 * [isWXAppInstalled](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#iswxappinstalledcallbackerrcallback)
 * [isWXAppSupportAPI](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#iswxappsupportapicallbackerrcallback)
 * [sendAuthReq](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#sendauthreqoptionserrcallback)
