@@ -4,16 +4,16 @@ react-native 的微信SDK辅助包，支持微信登录、微信分享、微信�
 
 ## 提供以下方法 / Method
 
-* [registerApp(appId,callback)](https://github.com/beefe/react-native-wechat-android#registerApp)
-* isWXAppInstalled(callback,errCallback) 
-* isWXAppSupportAPI(callback,errCallback)
-* sendAuthReq(options,errCallback)
-* sendLinkURL(options,errCallback)
-* sendImage(options,errCallback)
-* weChatPay(options,errCallback)
+* [registerApp](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#registerapp(appId,callback))
+* [isWXAppInstalled](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#isWXAppInstalled(callback,errCallback))
+* [isWXAppSupportAPI](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#isWXAppSupportAPI(callback,errCallback))
+* [sendAuthReq](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#sendAuthReq(options,errCallback))
+* [sendLinkURL](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#sendLinkURL(options,errCallback))
+* [sendImage](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#sendImage(options,errCallback))
+* [weChatPay](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#weChatPay(options,errCallback)(options,errCallback))
 
 
-### registerApp
+### registerApp(appId,callback)
 appId : 在微信开放平台申请的AppID
 
 callback : 返回注册结果(true/false)
@@ -25,7 +25,7 @@ WeChatAndroid.registerApp(appId,(registerOK) => {
 });
 ```
 
-* isWXAppInstalled(callback,errCallback)
+### isWXAppInstalled(callback,errCallback)
 ```javascript
 WeChatAndroid.isWXAppInstalled(
  (isInstalled) => {
@@ -37,7 +37,7 @@ WeChatAndroid.isWXAppInstalled(
 );
 ```
 
-* isWXAppSupportAPI(callback,errCallback)
+### isWXAppSupportAPI(callback,errCallback)
 ```javascript
 WeChatAndroid.isWXAppSupportAPI(
  (isSupport) => {
@@ -49,27 +49,32 @@ WeChatAndroid.isWXAppSupportAPI(
 );
 ```
 
-* sendAuthReq(options,errCallback)
+### sendAuthReq(options,errCallback)
 ```javascript
 WeChatAndroid.sendAuthReq(null,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
 ```
 
-* sendLinkURL(options,errCallback)
+### sendLinkURL(options,errCallback)
+```javascript
+WeChatAndroid.sendLinkURL(shareOptions,(err) => {
+ ToastAndroid.show(err,ToastAndroid.SHORT);
+});
+```
+### sendImage(options,errCallback)
 ```javascript
 WeChatAndroid.sendLinkURL(shareOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
 ```
 
-* weChatPay(options,errCallback)
+### weChatPay(options,errCallback)
 ```javascript
 WeChatAndroid.weChatPay(shareOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
 ```
-[options](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L53-L77)
 
 ## [安装及使用方法 / Installation and How to use](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md)
 
