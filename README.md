@@ -4,13 +4,13 @@ react-native 的微信SDK辅助包，支持微信登录、微信分享、微信�
 
 ## 提供以下方法 / Method
 
-* [registerApp](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#registerapp(appId,callback))
-* [isWXAppInstalled](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#isWXAppInstalled(callback,errCallback))
-* [isWXAppSupportAPI](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#isWXAppSupportAPI(callback,errCallback))
-* [sendAuthReq](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#sendAuthReq(options,errCallback))
-* [sendLinkURL](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#sendLinkURL(options,errCallback))
-* [sendImage](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#sendImage(options,errCallback))
-* [weChatPay](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#weChatPay(options,errCallback)(options,errCallback))
+* [registerApp](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#registerappappIdcallback)
+* [isWXAppInstalled](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#iswxappinstalledcallbackerrcallback)
+* [isWXAppSupportAPI](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#iswxappsupportapicallbackerrcallback)
+* [sendAuthReq](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#sendauthreqoptionserrcallback)
+* [sendLinkURL](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#sendlinkurloptionserrCallback)
+* [sendImage](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#sendImageoptionserrcallback)
+* [weChatPay](https://github.com/beefe/react-native-wechat-android/blob/master/README.md#wechatpayoptionserrcallback)
 
 
 ### registerApp(appId,callback)
