@@ -1,6 +1,7 @@
 # react-native-wechat-android
 react-native 的微信SDK辅助包，支持微信登录、微信分享、微信支付。
 
+## [安装及使用方法 / Installation and How to use](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md)
 
 ## 提供以下方法 / Method
 
@@ -11,7 +12,6 @@ react-native 的微信SDK辅助包，支持微信登录、微信分享、微信�
 * [sendLinkURL](https://github.com/beefe/react-native-wechat-android#sendlinkurloptionserrcallback)
 * [sendImage](https://github.com/beefe/react-native-wechat-android#sendimageoptionserrcallback)
 * [weChatPay](https://github.com/beefe/react-native-wechat-android#wechatpayoptionserrcallback)
-
 
 ### registerApp(appId,callback)
 
@@ -67,12 +67,23 @@ WeChatAndroid.isWXAppSupportAPI(
 
 ### sendAuthReq(options,errCallback)
 
-options : 微信登录需要的参数
+options : 微信登录需要的参数(可空)
 
 errCallback : 返回错误信息
 
 使用示例：
 
+```javascript
+var authOptions = {
+ scope: 'snsapi_userinfo',
+ state: 'SECRET'
+};
+
+WeChatAndroid.sendAuthReq(authOptions,(err) => {
+ ToastAndroid.show(err,ToastAndroid.SHORT);
+});
+```
+or
 ```javascript
 WeChatAndroid.sendAuthReq(null,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
@@ -88,6 +99,15 @@ errCallback : 返回错误信息
 使用示例：
 
 ```javascript
+var shareWebPageOptions = {
+  link: 'https://github.com/beefe/react-native-wechat-android',
+  tagName: 'test tagName',
+  thumbSize: 150,
+  title: 'this is share title',
+  desc: 'this is my share desc',
+  thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
+};
+
 WeChatAndroid.sendLinkURL(shareWebPageOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
@@ -101,27 +121,56 @@ errCallback : 返回错误信息
 
 使用示例：
 
+分享本地图片：
 ```javascript
-WeChatAndroid.sendImage(shareImageOptions,(err) => {
+var shareLocalImageOptions = {
+  imageSourceType: 0,
+  thumbSize: 150,
+  localPath: '/mnt/sdcard/temp.png',     // 此处改为你的本地图片路径
+};
+
+WeChatAndroid.sendImage(shareLocalImageOptions,(err) => {
+ ToastAndroid.show(err,ToastAndroid.SHORT);
+});
+```
+
+分享网络图片：(分享网络图片到朋友圈和收藏都会失败,具体原因待查,建议把网络图片下载到本地来分享)
+```javascript
+var shareRemoteImageOptions = {
+  imageSourceType: 1,
+  thumbSize: 150,
+  scene: 0,
+  remoteUrl: 'https://avatars3.githubusercontent.com/u/3015681?v=3&s=460',
+};
+
+WeChatAndroid.sendImage(shareRemoteImageOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
 ```
 
 ### weChatPay(options,errCallback)
 
-options : 微信支付需要的参数
+options : [微信支付需要的参数](https://pay.weixin.qq.com/wiki/doc/api/app.php?chapter=9_12&index=2)
 
 errCallback : 返回错误信息
 
 使用示例：
 
 ```javascript
-WeChatAndroid.weChatPay(shareOptions,(err) => {
+var payOptions = {
+  appId: 'wx8888888888888888',         
+  nonceStr: '5K8264ILTKCH16CQ2502SI8ZNMTM67VS',            
+  packageValue: 'Sign=WXPay',
+  partnerId: '1900000109',
+  prepayId: 'WX1217752501201407033233368018',
+  timeStamp: '1412000000',
+  sign: 'C380BEC2BFD727A4B6845133519F3AD6',
+};
+
+WeChatAndroid.weChatPay(payOptions,(err) => {
  ToastAndroid.show(err,ToastAndroid.SHORT);
 });
 ```
-
-## [安装及使用方法 / Installation and How to use](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md)
 
 ## Run Renderings
 <center>
