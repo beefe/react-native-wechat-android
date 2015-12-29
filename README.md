@@ -1,12 +1,24 @@
 # react-native-wechat-android
-react-native 的微信SDK辅助包，目前提供调用微信支付的方法[weChatPay](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L341-L395)，返回处理可以参考[微信开放平台微信支付功能](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317784&token=ac2c2797aab719b69c622e37880298e1fc7638b0&lang=zh_CN)自行完善，需要在wxapi包中添加WXPayEntryActivity.java类来处理。
+react-native 的微信SDK辅助包，支持微信登录、微信分享、微信支付。
 
-The WeChat sdk help library for react-native , currently provides call wechat payment method [weChatPay](https://github.com/beefe/react-native-wechat-android/blob/master/src/main/java/com/heng/wechat/WeChatModule.java#L341-L395), returns to the process can refer to [WeChat open api](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419317784&token=ac2c2797aab719b69c622e37880298e1fc7638b0&lang = zh_CN) self- improvement , need to add in wxapi package WXPayEntryActivity.java class to handle .
 
 ## 提供以下方法 / Method
 
-* registerApp(appId,callback)
- 
+* [registerApp(appId,callback)](https://github.com/beefe/react-native-wechat-android#registerApp)
+* isWXAppInstalled(callback,errCallback) 
+* isWXAppSupportAPI(callback,errCallback)
+* sendAuthReq(options,errCallback)
+* sendLinkURL(options,errCallback)
+* sendImage(options,errCallback)
+* weChatPay(options,errCallback)
+
+
+### registerApp
+appId : 在微信开放平台申请的AppID
+
+callback : 返回注册结果(true/false)
+
+使用示例：
 ```javascript
 WeChatAndroid.registerApp(appId,(registerOK) => {
  ToastAndroid.show(registerOK + '',ToastAndroid.SHORT);
