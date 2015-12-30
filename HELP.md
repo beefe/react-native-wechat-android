@@ -1,5 +1,14 @@
 ## 建议用[Android Studio](http://developer.android.com/sdk/index.html)(需要翻墙)打开android 项目来修改，不然编译容易出错。
 
+### 添加步骤：
+* [安装npm包](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#第一步--安装npm包)
+* [更新settings.gradle](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#第二步--更新settingsgradle)
+* [更新build.gradle](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#第三步--更新app的buildgradle)
+* [注册包](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#第四步--注册包)
+* [添加微信sdk](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#第五步--添加微信sdk)
+* [添加微信回调类的实现](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#第六步--添加微信回调类的实现)
+* [在js文件中使用](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#第七步--在你的js文件中使用)
+
 #### 第一步 : 安装npm包
 
 ```shell
