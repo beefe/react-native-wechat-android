@@ -1,3 +1,5 @@
+## 建议用[Android Studio](http://developer.android.com/sdk/index.html)打开android 项目来修改，不然编译容易出错。
+
 #### 第一步 : 安装npm包
 
 ```shell
@@ -38,7 +40,7 @@ dependencies {
 
 ```java
 ...
-import com.heng.wechat.WeChatPackage;
+import com.heng.wechat.WeChatPackage;      // 导入类
 
 public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
 
@@ -54,7 +56,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
                 .setBundleAssetName("index.android.bundle")
                 .setJSMainModuleName("index.android")
                 .addPackage(new MainReactPackage())
-                .addPackage(new WeChatPackage()) // 注册WeChatPackage / register wechat package
+                .addPackage(new WeChatPackage())       // 注册WeChatPackage
                 .setUseDeveloperSupport(BuildConfig.DEBUG)
                 .setInitialLifecycleState(LifecycleState.RESUMED)
                 .build();
@@ -95,6 +97,22 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 
 WXEntryActivity.java :
 ```java
+package com.loanbear.wxapi;    //改为你的包名   package com.xxx.wxapi;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.heng.wechat.WeChatModule;
+import com.tencent.mm.sdk.modelbase.BaseReq;
+import com.tencent.mm.sdk.modelbase.BaseResp;
+import com.tencent.mm.sdk.modelmsg.SendAuth;
+import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
+
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     Context context;
@@ -130,9 +148,9 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     //用户同意
                     String code = ((SendAuth.Resp) baseResp).code;
                     String state = ((SendAuth.Resp) baseResp).state;
-     @              map.putString("code", code);                        
-     @              map.putString("state", state);
-     @              map.putBoolean("success", true);
+                    map.putString("code", code);                 // @A2
+                    map.putString("state", state);               // @A3
+                    map.putBoolean("success", true);             // @A1
                     break;
                 case BaseResp.ErrCode.ERR_AUTH_DENIED:
                     //用户拒绝授权
@@ -140,16 +158,16 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                     //用户取消
                 default:
                     //其他情况
-     @              map.putBoolean("success", false);
+                    map.putBoolean("success", false);            // @A1
                     break;
             }
-     @       params.putMap("response", map);
+            params.putMap("response", map);                      // @A0
             WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-     @              .emit("finishedAuth", params);
-        }else{
+                    .emit("finishedAuth", params);               // @A
+        } else {
             switch (errCode) {
                 case BaseResp.ErrCode.ERR_OK:
-     @              map.putBoolean("success", true);
+                    map.putBoolean("success", true);             // @S1
                     break;
                 case BaseResp.ErrCode.ERR_COMM://一般错误
                 case BaseResp.ErrCode.ERR_USER_CANCEL://用户取消
@@ -157,22 +175,39 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
                 case BaseResp.ErrCode.ERR_AUTH_DENIED://认证被否决
                 case BaseResp.ErrCode.ERR_UNSUPPORT://不支持错误
                 default:
-     @              map.putBoolean("success", false);
+                    map.putBoolean("success", false);            // @S1
                     break;
             }
-     @      params.putMap("response", map);
+            params.putMap("response", map);                      // @S0
             WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-     @              .emit("finishedShare", params); @
+                    .emit("finishedShare", params);              // @S
         }
         finish();
+        // @所标记的key可以根据需要自行更改,对应你js文件中的key即可
     }
-    // @所标记的key可以根据需要自行更改,对应你js文件中的key即可 
 }
 ```
 
 WXPayEntryActivity.java :
 
 ```java
+package com.loanbear.wxapi;           //改为你的包名   package com.xxx.wxapi;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.heng.wechat.WeChatModule;
+import com.tencent.mm.sdk.constants.ConstantsAPI;
+import com.tencent.mm.sdk.modelbase.BaseReq;
+import com.tencent.mm.sdk.modelbase.BaseResp;
+import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
+
+
 public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
     Context context;
@@ -197,27 +232,28 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
     }
 
     @Override
-    public void onResp(BaseResp resp) {
-        if (resp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
-            int errCode = resp.errCode;
+    public void onResp(BaseResp baseResp) {
+        if (baseResp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
+            int errCode = baseResp.errCode;
             WritableMap params = Arguments.createMap();
             WritableMap map = Arguments.createMap();
             switch (errCode) {
                 case BaseResp.ErrCode.ERR_OK:
-     @              map.putBoolean("success", true);
+                    map.putBoolean("success", true);           // @P1
                     break;
                 default:
-     @              map.putBoolean("success", false);
+                    map.putBoolean("success", false);          // @P1
                     break;
             }
-      @     map.putInt("errCode", errCode);
-      @     params.putMap("response", map);
+            map.putInt("errCode", errCode);                    // @P2
+            params.putMap("response", map);                    // @P0
             WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-      @            .emit("finishedPay", params);
+                    .emit("finishedPay", params);              // @P
         }
         finish();
+
+        // @所标记的key可以根据需要自行更改,对应你js文件中的key即可
     }
-    // @所标记的key可以根据需要自行更改,对应你js文件中的key即可 
 }
 ```
 
@@ -340,28 +376,28 @@ var MyProject = React.createClass({
     });
   },
   componentWillMount: function(){
-    DeviceEventEmitter.addListener('finishedAuth',function(event){
-      var success = event.response.success;
+    DeviceEventEmitter.addListener('finishedAuth',function(event){  // 对应WXEntryActivity.java @A
+      var success = event.response.success;         // 对应WXEntryActivity.java @A1
       if(success){
          ToastAndroid.show(
-            ' code = ' + JSON.stringify(event.response.code) + 
-            ' state = ' + JSON.stringify(event.response.state),
+            ' code = ' + JSON.stringify(event.response.code) +     // 对应WXEntryActivity.java @A2
+            ' state = ' + JSON.stringify(event.response.state),    // 对应WXEntryActivity.java @A3
             ToastAndroid.LONG
           );
       }else{
         ToastAndroid.show('授权失败',ToastAndroid.SHORT);
       }
     });
-    DeviceEventEmitter.addListener('finishedShare',function(event){
-      var success = event.response.success;
+    DeviceEventEmitter.addListener('finishedShare',function(event){   // 对应WXEntryActivity.java @S
+      var success = event.response.success;                           // 对应WXEntryActivity.java @S1
       if(success){
         ToastAndroid.show('分享成功',ToastAndroid.SHORT);
       }else{
         ToastAndroid.show('分享失败',ToastAndroid.SHORT);
       }
     });
-//    DeviceEventEmitter.addListener('finishedPay',function(event){
-//      var success = event.response.success;
+//    DeviceEventEmitter.addListener('finishedPay',function(event){    // 对应WXPayEntryActivity.java @P
+//      var success = event.response.success;                          // 对应WXPayEntryActivity.java @P1
 //      if(success){
 //        // 在此发起网络请求由服务器验证是否真正支付成功，然后做出相应的处理
 //      }else{
