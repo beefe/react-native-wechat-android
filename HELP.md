@@ -95,7 +95,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 
 #### 第七步 : 在微信回调类里进行相应的回调处理 
 
-WXEntryActivity.java :
+##### WXEntryActivity.java :
 ```java
 package com.loanbear.wxapi;    //改为你的包名   package com.xxx.wxapi;
 
@@ -188,7 +188,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 }
 ```
 
-WXPayEntryActivity.java :
+##### WXPayEntryActivity.java :
 
 ```java
 package com.loanbear.wxapi;           //改为你的包名   package com.xxx.wxapi;
