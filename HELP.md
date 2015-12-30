@@ -70,9 +70,8 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 把wechat/libs/libammsdk.jar复制到android/app/libs文件夹下，或者去微信开放平台的资源中心 点击[Android资源下载](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419319167)下载[Android开发工具包](https://res.wx.qq.com/open/zh_CN/htmledition/res/dev/download/sdk/Android2_SDK238f8d.zip)
 
 
-#### 第六步 : 添加微信回调类
+#### 第六步 : 添加微信回调类的实现
 在你的包名相应目录下创建回调类的目录，例如应用程序的包名为com.heng,在该目录应该为com.heng.wxapi(微信指定的回调路径，不能更改,否则无法获取回调结果),并在该wxapi目录下创建[WXEntryActivity.java](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#wxentryactivityjava-)（微信登录和微信分享的回调类）和[WXPayEntryActivity.java](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#wxpayentryactivityjava-)（微信支付的回调类，如果没有微信支付功能不需要此类）,均需要继承自Activity（extends Activity），并在AndroidManifest.xml文件中添加如下代码：
-
 ```xml
  ...
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/> 
@@ -92,8 +91,6 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
   android:theme="@android:style/Theme.Translucent.NoTitleBar" />
  ...
 ```
-
-#### 第七步 : 在微信回调类里进行相应的回调处理 
 
 ##### WXEntryActivity.java :
 ```java
@@ -258,7 +255,7 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 ```
 
 
-#### 第八步 : 在你的JS文件中使用 
+#### 第七步 : 在你的JS文件中使用 
 
 ```javascript
 // 比如在index.android.js中使用
