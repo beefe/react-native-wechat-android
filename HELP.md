@@ -71,7 +71,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
 
 
 #### 第六步 : 添加微信回调类
-在你的包名相应目录下创建回调类的目录，例如应用程序的包名为com.heng,在该目录应该为com.heng.wxapi(微信指定的回调路径，不能更改,否则无法获取回调结果),并在该wxapi目录下创建WXEntryActivity.java（微信登录和微信分享的回调类）和WXPayEntryActivity.java（微信支付的回调类，如果没有微信支付功能不需要此类）,均需要继承自Activity（extends Activity），并在AndroidManifest.xml文件中添加如下代码：
+在你的包名相应目录下创建回调类的目录，例如应用程序的包名为com.heng,在该目录应该为com.heng.wxapi(微信指定的回调路径，不能更改,否则无法获取回调结果),并在该wxapi目录下创建[WXEntryActivity.java](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#wxentryactivityjava-)（微信登录和微信分享的回调类）和[WXPayEntryActivity.java](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md#wxpayentryactivityjava-)（微信支付的回调类，如果没有微信支付功能不需要此类）,均需要继承自Activity（extends Activity），并在AndroidManifest.xml文件中添加如下代码：
 
 ```xml
  ...
