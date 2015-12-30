@@ -1,4 +1,4 @@
-## 建议用[Android Studio](http://developer.android.com/sdk/index.html)打开android 项目来修改，不然编译容易出错。
+## 建议用[Android Studio](http://developer.android.com/sdk/index.html)(需要翻墙)打开android 项目来修改，不然编译容易出错。
 
 #### 第一步 : 安装npm包
 
