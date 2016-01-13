@@ -17,7 +17,7 @@ public class WeChatPackage implements ReactPackage {
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        List<NativeModule> list = new ArrayList<>();
+        List<NativeModule> list = new ArrayList<NativeModule>();
         list.add(new WeChatModule(reactContext));
         return list;
     }
