@@ -1,7 +1,7 @@
 # react-native-wechat-android
 react-native 的微信SDK辅助包，支持微信登录、微信分享、微信支付。
 
-## [安装及使用方法 / Installation and How to use](https://github.com/beefe/react-native-wechat-android/blob/master/HELP.md)
+## [安装及使用方法 / Installation and How to use](./HELP.md)
 
 ## 提供以下方法 / Method
 
