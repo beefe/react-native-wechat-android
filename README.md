@@ -5,13 +5,13 @@ react-native 的微信SDK辅助包，支持微信登录、微信分享、微信�
 
 ## 提供以下方法 / Method
 
-* [registerApp](https://github.com/beefe/react-native-wechat-android#registerappappidcallback)
-* [isWXAppInstalled](https://github.com/beefe/react-native-wechat-android#iswxappinstalledcallbackerrcallback)
-* [isWXAppSupportAPI](https://github.com/beefe/react-native-wechat-android#iswxappsupportapicallbackerrcallback)
-* [sendAuthReq](https://github.com/beefe/react-native-wechat-android#sendauthreqoptionserrcallback)
-* [sendLinkURL](https://github.com/beefe/react-native-wechat-android#sendlinkurloptionserrcallback)
-* [sendImage](https://github.com/beefe/react-native-wechat-android#sendimageoptionserrcallback)
-* [weChatPay](https://github.com/beefe/react-native-wechat-android#wechatpayoptionserrcallback)
+* [registerApp](#registerappappidcallback)
+* [isWXAppInstalled](#iswxappinstalledcallbackerrcallback)
+* [isWXAppSupportAPI](#iswxappsupportapicallbackerrcallback)
+* [sendAuthReq](#sendauthreqoptionserrcallback)
+* [sendLinkURL](#sendlinkurloptionserrcallback)
+* [sendImage](#sendimageoptionserrcallback)
+* [weChatPay](#wechatpayoptionserrcallback)
 
 ### registerApp(appId,callback)
 
@@ -242,21 +242,21 @@ DeviceEventEmitter.addListener('finishedPay',function(event){
 
 ## Run Renderings
 <center>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/wait_auth.jpeg"
+    <img src="./ScreenShot/wait_auth.jpeg"
     width="300" height="520"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/local_to_favorite.jpeg"
+    <img src="./ScreenShot/local_to_favorite.jpeg"
     width="300" height="520"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/local_to_timeline.jpeg"
+    <img src="./ScreenShot/local_to_timeline.jpeg"
     width="300" height="520"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/webpage_to_favorite.jpeg"
+    <img src="./ScreenShot/webpage_to_favorite.jpeg"
     width="300" height="520"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/webpage_to_timeline.jpeg"
+    <img src="./ScreenShot/webpage_to_timeline.jpeg"
     width="300" height="520"/>
-    <img src="https://github.com/beefe/react-native-wechat-android/blob/master/ScreenShot/local_to_favorite_screenshot.jpeg"
+    <img src="./ScreenShot/local_to_favorite_screenshot.jpeg"
     width="300" height="520"/>
 </center>
 
-## [Demo download](https://github.com/beefe/react-native-wechat-android/blob/master/apk/demo.apk?raw=true)
+## [Demo download](./apk/demo.apk?raw=true)
 
 ## Notes
 打包apk请参考[Generating Signed APK](http://facebook.github.io/react-native/docs/signed-apk-android.html#content)
