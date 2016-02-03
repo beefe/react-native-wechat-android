@@ -194,7 +194,7 @@ var webpageOptions = {
 //分享音乐
 var musicOptions = {
       title: '这里是分享的标题',
-      desc: '这里是分享的标题',
+      desc: '发现一首好听的音乐，分享给你',
       transaction: 'music',
       scene: 1,
       type: 4,
@@ -206,7 +206,7 @@ var musicOptions = {
 //分享视频
 var videoOptions = {
       title: '这里是分享的标题',
-      desc: '这里是分享的标题',
+      desc: '这个视频好有趣，一起来看看',
       transaction: 'video',
       scene: 1,
       type: 5,
