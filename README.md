@@ -67,7 +67,7 @@ WeChatAndroid.isWXAppSupportAPI(
 );
 ```
 
-```### getWXAppSupportAPI(callback)
+### getWXAppSupportAPI(callback)
 
 callback : 回调(err,res)
 
@@ -122,20 +122,20 @@ DeviceEventEmitter.addListener('finishedAuth',function(event){
 
 options : 分享到微信需要的参数
  * type （必传，用来区分分享的内容）
-  ＊ 1:文字
-  ＊ 2:图片
-  ＊ 3:网页
-  ＊ 4:音乐
-  ＊ 5:视频
+  * 1:文字
+  * 2:图片
+  * 3:网页
+  * 4:音乐
+  * 5:视频
  * title （分享的标题）
  * desc （分享的描述）
  * thumbSize （分享的缩略图大小，不传默认150）
  * tagName
  * transaction
  * scene （分享方式，传错或者不传默认为0）
-   ＊ 0:聊天界面／好友
-   ＊ 1:朋友圈
-   ＊ 2:收藏
+  * 0:聊天界面／好友
+  * 1:朋友圈
+  * 2:收藏
  * text （当分享类型为文本时使用）
  * imageUrl （当分享类型为网络照片时使用）
  * imagePath （当分享类型为本地照片时使用）
