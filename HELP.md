@@ -148,7 +148,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         int errCode = baseResp.errCode;
         WritableMap params = Arguments.createMap();
         params.putInt("errCode", errCode);
-        String eventName;
+        String eventName = null;
         switch (errCode) {
             case BaseResp.ErrCode.ERR_OK:
                 params.putBoolean("success", true);                 // @
@@ -169,7 +169,6 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         }
         WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
             .emit(eventName, params);
-        }
         finish();
     }
 }
