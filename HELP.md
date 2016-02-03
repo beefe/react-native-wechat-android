@@ -144,52 +144,33 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp baseResp) {
+        // 下面@所标记的地方key值可以根据需要自行更改,对应你js文件中的key即可
         int errCode = baseResp.errCode;
         WritableMap params = Arguments.createMap();
-        WritableMap map = Arguments.createMap();
-        if (WeChatModule.currentAction.equals(WeChatModule.ACTION_LOGIN)) {
-            map.putInt("errCode", errCode);
-            switch (errCode) {
-                case BaseResp.ErrCode.ERR_OK:
-                    //用户同意
+        params.putInt("errCode", errCode);
+        String eventName;
+        switch (errCode) {
+            case BaseResp.ErrCode.ERR_OK:
+                params.putBoolean("success", true);                 // @
+                if (baseResp instanceof SendAuth.Resp) {
                     String code = ((SendAuth.Resp) baseResp).code;
                     String state = ((SendAuth.Resp) baseResp).state;
-                    map.putString("code", code);                 // @A2
-                    map.putString("state", state);               // @A3
-                    map.putBoolean("success", true);             // @A1
-                    break;
-                case BaseResp.ErrCode.ERR_AUTH_DENIED:
-                    //用户拒绝授权
-                case BaseResp.ErrCode.ERR_USER_CANCEL:
-                    //用户取消
-                default:
-                    //其他情况
-                    map.putBoolean("success", false);            // @A1
-                    break;
-            }
-            params.putMap("response", map);                      // @A0
-            WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit("finishedAuth", params);               // @A
-        } else {
-            switch (errCode) {
-                case BaseResp.ErrCode.ERR_OK:
-                    map.putBoolean("success", true);             // @S1
-                    break;
-                case BaseResp.ErrCode.ERR_COMM://一般错误
-                case BaseResp.ErrCode.ERR_USER_CANCEL://用户取消
-                case BaseResp.ErrCode.ERR_SENT_FAILED://发送失败
-                case BaseResp.ErrCode.ERR_AUTH_DENIED://认证被否决
-                case BaseResp.ErrCode.ERR_UNSUPPORT://不支持错误
-                default:
-                    map.putBoolean("success", false);            // @S1
-                    break;
-            }
-            params.putMap("response", map);                      // @S0
-            WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit("finishedShare", params);              // @S
+                    params.putString("code", code);                 // @
+                    params.putString("state", state);               // @
+                    eventName = "finishedAuth";                     // @
+                } else if (baseResp instanceof SendMessageToWX.Resp){
+                    eventName = "finishedShare";                    // @
+                }
+                break;
+            default:
+                //其他情况
+                params.putBoolean("success", false);                // @
+                break;
+        }
+        WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+            .emit(eventName, params);
         }
         finish();
-        // @所标记的key可以根据需要自行更改,对应你js文件中的key即可
     }
 }
 ```
@@ -239,26 +220,23 @@ public class WXPayEntryActivity extends Activity implements IWXAPIEventHandler {
 
     @Override
     public void onResp(BaseResp baseResp) {
+        // 下面@所标记的地方key值可以根据需要自行更改,对应你js文件中的key即可
         if (baseResp.getType() == ConstantsAPI.COMMAND_PAY_BY_WX) {
             int errCode = baseResp.errCode;
             WritableMap params = Arguments.createMap();
-            WritableMap map = Arguments.createMap();
+            params.putInt("errCode", errCode);                    // @
             switch (errCode) {
                 case BaseResp.ErrCode.ERR_OK:
-                    map.putBoolean("success", true);           // @P1
+                    params.putBoolean("success", true);           // @
                     break;
                 default:
-                    map.putBoolean("success", false);          // @P1
+                    params.putBoolean("success", false);          // @
                     break;
             }
-            map.putInt("errCode", errCode);                    // @P2
-            params.putMap("response", map);                    // @P0
             WeChatModule.reactApplicationContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-                    .emit("finishedPay", params);              // @P
+                    .emit("finishedPay", params);                 // @
         }
         finish();
-
-        // @所标记的key可以根据需要自行更改,对应你js文件中的key即可
     }
 }
 ```

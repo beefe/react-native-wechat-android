@@ -13,6 +13,9 @@ import com.tencent.mm.sdk.modelmsg.SendAuth;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXMusicObject;
+import com.tencent.mm.sdk.modelmsg.WXTextObject;
+import com.tencent.mm.sdk.modelmsg.WXVideoObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -25,18 +28,23 @@ import java.net.URL;
 
 /**
  * Created by heng on 2015/12/10.
- *
+ * <p/>
  * Edited by heng on 15/12/18
  * Added share webPage and weChat Pay
- * 
+ * <p/>
  * Edited by heng on 2015/12/22
  * Add remote image async download
- *
+ * <p/>
  * Edited by heng on 2015/12/29
  * 1.Removed Handler and Thread
  * 2.Modify options param
  * 3.Added share local
  * 4.Added and remote image(分享远程图片到朋友圈和收藏都会失败,具体原因待查,建议把远程图片下载到本地来分享)
+ * <p/>
+ * Edited by heng on 2016/02/02
+ * 1.Added method openWXApp
+ * 2.Edited callback(err,res)
+ * 3.Reconstruction code
  */
 public class WeChatModule extends ReactContextBaseJavaModule {
 
@@ -46,28 +54,30 @@ public class WeChatModule extends ReactContextBaseJavaModule {
     public static String appId;
     public static ReactApplicationContext reactApplicationContext;
 
-    public static final String ACTION_LOGIN = "login";
-    public static final String ACTION_SHARE = "share";
-    public static final String ACTION_DEFAULT = "default";
-    public static String currentAction = ACTION_DEFAULT;
-
-
-    /*============ WeChat login options key ==============*/
-    public static final String OPTIONS_SCOPE = "scope";
-    public static final String OPTIONS_STATE = "state";
-    /*============ WeChat login options key ==============*/
 
     /*============ WeChat share options key ==============*/
-    public static final String OPTIONS_LINK = "link";
-    public static final String OPTIONS_TAG_NAME = "tagName";
     public static final String OPTIONS_TITLE = "title";
     public static final String OPTIONS_DESC = "desc";
-    public static final String OPTIONS_THUMB_IMAGE = "thumbImage";
+    public static final String OPTIONS_TAG_NAME = "tagName";
     public static final String OPTIONS_THUMB_SIZE = "thumbSize";
+    public static final String OPTIONS_TRANSACTION = "transaction";
     public static final String OPTIONS_SCENE = "scene";
-    public static final String OPTIONS_LOCAL_PATH = "localPath";
-    public static final String OPTIONS_REMOTE_URL = "remoteUrl";
-    public static final String OPTIONS_IMAGE_SOURCE_TYPE = "imageSourceType";
+    public static final String OPTIONS_TYPE = "type";
+
+    public static final String OPTIONS_TEXT = "text";
+
+    public static final String OPTIONS_IMAGE_URL = "imageUrl";
+    public static final String OPTIONS_IMAGE_PATH = "imagePath";
+
+    public static final String OPTIONS_THUMB_IMAGE = "thumbImage";
+
+    public static final String OPTIONS_WEBPAGE_URL = "webpageUrl";
+
+    public static final String OPTIONS_MUSIC_URL = "musicUrl";
+    public static final String OPTIONS_MUSIC_LOW_BAND_URL = "musicLowBandUrl";
+
+    public static final String OPTIONS_VIDEO_URL = "videoUrl";
+    public static final String OPTIONS_VIDEO_LOW_BAND_URL = "videoLowBandUrl";
     /*============ WeChat share options key ==============*/
 
     /*============ WeChat pay options key ==============*/
@@ -81,25 +91,24 @@ public class WeChatModule extends ReactContextBaseJavaModule {
     /*============ WeChat pay options key ==============*/
 
 
-    public static final int SCENE_SESSION = 0;          //分享到聊天界面
-    public static final int SCENE_TIMELINE = 1;         //分享到朋友圈
-    public static final int SCENE_FAVORITE = 2;         //分享到收藏
+    public static final int TYPE_TEXT = 1;          //文字
+    public static final int TYPE_IMAGE = 2;         //图片
+    public static final int TYPE_WEB_PAGE = 3;      //网页
+    public static final int TYPE_MUSIC = 4;         //音乐
+    public static final int TYPE_VIDEO = 5;         //视频
 
-    String link = null;          //分享的网页链接
-    String tagName = null;       //分享的标签名
-    String title = null;         //分享的网页标题
-    String desc = null;          //分享的网页描述
-    String transaction = null;   //分享的描述
-    String thumbImage = null;    //分享的图片的网络地址
-    int thumbSize = 150;         //分享的缩略图大小
-    int scene = 0;               //分享的方式(0:聊天界面，1:朋友圈，2:收藏)
-    int imageSourceType = 0;     //分享的图片来源(0:本地，1:网络)
-    String localPath = null;     //分享的图片的本地路径
-    String remoteUrl = null;     //分享的图片的本地路径
+    String tagName = null;
+    String title = null;
+    String desc = null;
+    String transaction = null;
+    Bitmap bitmap = null;           //分享的缩略图
+    int thumbSize = 150;            //分享的缩略图大小
+    int scene;                      //分享的方式(0:聊天界面，1:朋友圈，2:收藏)
+
 
     public WeChatModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        WeChatModule.reactApplicationContext = reactContext;
+        reactApplicationContext = reactContext;
     }
 
     @Override
@@ -107,207 +116,210 @@ public class WeChatModule extends ReactContextBaseJavaModule {
         return REACT_MODULE_NAME;
     }
 
+    /**
+     * 注册AppID到微信（使用微信SDK必须先调用此方法）
+     */
     @ReactMethod
     public void registerApp(String appId, Callback callback) {
-        WeChatModule.appId = appId;
-        WeChatModule.wxApi = WXAPIFactory.createWXAPI(getReactApplicationContext(), appId, true);
-        callback.invoke(WeChatModule.wxApi.registerApp(appId));
-    }
-
-    /**
-     * Edited by heng on 2015/12/18
-     * <p/>
-     * add errCallback;
-     */
-    @ReactMethod
-    public void isWXAppInstalled(Callback callback, Callback errCallback) {
-        if (WeChatModule.wxApi == null) {
-            if (errCallback != null) {
-                errCallback.invoke("please registerApp before this !");
+        if (TextUtils.isEmpty(appId)) {
+            if (callback != null) {
+                callback.invoke("appId must be not null !");
             }
-            return;
-        }
-        if (callback != null) {
-            callback.invoke(WeChatModule.wxApi.isWXAppInstalled());
-        }
-    }
-
-    /**
-     * Edited by heng on 2015/12/18
-     * <p/>
-     * update params and add errCallback;
-     * <p/>
-     * save current action
-     */
-    @ReactMethod
-    public void sendAuthReq(ReadableMap options, Callback errCallback) {
-        if (WeChatModule.wxApi == null) {
-            if (errCallback != null) {
-                errCallback.invoke("please registerApp before this !");
-            }
-            return;
-        }
-        String scope = "snsapi_userinfo";
-        String state = "SECRET";
-        if (options != null) {
-            if (options.hasKey(OPTIONS_SCOPE)) {
-                scope = options.getString(OPTIONS_SCOPE);
-            }
-            if (options.hasKey(OPTIONS_STATE)) {
-                state = options.getString(OPTIONS_STATE);
-            }
-        }
-        SendAuth.Req req = new SendAuth.Req();
-        req.scope = scope;
-        req.state = state;
-        WeChatModule.currentAction = ACTION_LOGIN;
-        WeChatModule.wxApi.sendReq(req);
-    }
-
-
-    /**
-     * Added by heng on 2015/12/18
-     * <p/>
-     * callback return true ? is support : not support
-     * if not register WeChat appId , errCallback return error
-     */
-    @ReactMethod
-    public void isWXAppSupportAPI(Callback callback, Callback errCallback) {
-        if (WeChatModule.wxApi == null) {
-            if (errCallback != null) {
-                errCallback.invoke("please registerApp before this !");
-            }
-            return;
-        }
-        if (callback != null) {
-            callback.invoke(WeChatModule.wxApi.isWXAppSupportAPI());
-        }
-    }
-
-    /**
-     * Added by heng on 2015/12/18
-     * Edited by heng one 2015/12/29
-     *
-     * this method is used to share webPage to WeChat
-     *
-     * errCallback return error
-     */
-    @ReactMethod
-    public void sendLinkURL(ReadableMap options, Callback errCallback) {
-        if (WeChatModule.wxApi == null) {
-            if (errCallback != null) {
-                errCallback.invoke("please registerApp before this !");
-            }
-            return;
-        }
-
-        if (options != null) {
-            if (options.hasKey(OPTIONS_LINK)) {
-                link = options.getString(OPTIONS_LINK);
-            }else{
-                errCallback.invoke("please setting share link !");
-                return;
-            }
-            if (options.hasKey(OPTIONS_TAG_NAME)) {
-                tagName = options.getString(OPTIONS_TAG_NAME);
-            }
-            if (options.hasKey(OPTIONS_THUMB_SIZE)) {
-                thumbSize = options.getInt(OPTIONS_THUMB_SIZE);
-            }
-            if (options.hasKey(OPTIONS_TITLE)) {
-                title = options.getString(OPTIONS_TITLE);
-            }else{
-                errCallback.invoke("please setting share title !");
-                return;
-            }
-            if (options.hasKey(OPTIONS_DESC)) {
-                desc = options.getString(OPTIONS_DESC);
-            }
-            if (options.hasKey(OPTIONS_THUMB_IMAGE)) {
-                thumbImage = options.getString(OPTIONS_THUMB_IMAGE);
-            }
-            if (options.hasKey(OPTIONS_SCENE)) {
-                scene = options.getInt(OPTIONS_SCENE);
-            }
-            shareWebPage(thumbImage);
         } else {
-            if (errCallback != null) {
-                errCallback.invoke("please setting options !");
+            WeChatModule.appId = appId;
+            WeChatModule.wxApi = WXAPIFactory.createWXAPI(getReactApplicationContext(), appId, true);
+            boolean registered = WeChatModule.wxApi.registerApp(appId);
+            if (callback != null) {
+                callback.invoke(null, registered);
+            }
+        }
+    }
+
+    private void commonCallback(Callback callback, boolean res) {
+        if (callback != null) {
+            if (WeChatModule.wxApi == null) {
+                callback.invoke("please registerApp before this !");
+                return;
+            }
+            callback.invoke(null, res);
+        }
+    }
+
+    /**
+     * 打开微信客户端
+     */
+    @ReactMethod
+    public void openWXApp(Callback callback) {
+        commonCallback(callback, WeChatModule.wxApi.openWXApp());
+    }
+
+    /**
+     * 判断是否安装微信
+     */
+    @ReactMethod
+    public void isWXAppInstalled(Callback callback) {
+        commonCallback(callback, WeChatModule.wxApi.isWXAppInstalled());
+    }
+
+    /**
+     * 判断安装的版本是否为微信支持的API
+     */
+    @ReactMethod
+    public void isWXAppSupportAPI(Callback callback) {
+        commonCallback(callback, WeChatModule.wxApi.isWXAppSupportAPI());
+    }
+
+    /**
+     * 获取微信支持的API版本
+     */
+    @ReactMethod
+    public void getWXAppSupportAPI(Callback callback) {
+        if (callback != null) {
+            if (WeChatModule.wxApi == null) {
+                callback.invoke("please registerApp before this !");
+                return;
+            }
+            int supportAPI = WeChatModule.wxApi.getWXAppSupportAPI();
+            callback.invoke(null, supportAPI);
+        }
+    }
+
+    /**
+     * 微信授权登录
+     */
+    @ReactMethod
+    public void sendAuthReq(String scope, String state, Callback callback) {
+        if (WeChatModule.wxApi == null) {
+            if (callback != null) {
+                callback.invoke("please registerApp before this !");
+            }
+        } else {
+            if (TextUtils.isEmpty(scope)) {
+                scope = "snsapi_userinfo";
+            }
+            if (TextUtils.isEmpty(state)) {
+                state = "SECRET";
+            }
+            SendAuth.Req req = new SendAuth.Req();
+            req.scope = scope;
+            req.state = state;
+            boolean sendReqOK = WeChatModule.wxApi.sendReq(req);
+            if (callback != null) {
+                callback.invoke(null, sendReqOK);
             }
         }
     }
 
     /**
-     * Added by buhe on 2015/12/29
-     *
-     * Edited by heng on 2015/12/29
-     *
-     * this method is used to share image to WeChat
-     * errCallback return error
+     * 分享到微信
      */
     @ReactMethod
-    public void sendImage(ReadableMap options, Callback errCallback) {
+    public void sendReq(ReadableMap options, Callback callback) {
         if (WeChatModule.wxApi == null) {
-            if (errCallback != null) {
-                errCallback.invoke("please registerApp before this !");
+            if (callback != null) {
+                callback.invoke("please registerApp before this !");
             }
-            return;
-        }
+        } else {
+            if (options == null) {
+                if (callback != null) {
+                    callback.invoke("please setting options !");
+                }
+            } else {
+                if (options.hasKey(OPTIONS_TYPE)) {
+                    WXMediaMessage msg = new WXMediaMessage();
 
-        if (options != null) {
-            if(options.hasKey(OPTIONS_IMAGE_SOURCE_TYPE)){
-                imageSourceType = options.getInt(OPTIONS_IMAGE_SOURCE_TYPE);
-            }
-            if (options.hasKey(OPTIONS_SCENE)) {
-                scene = options.getInt(OPTIONS_SCENE);
-            }
-            if (options.hasKey(OPTIONS_THUMB_SIZE)) {
-                thumbSize = options.getInt(OPTIONS_THUMB_SIZE);
-            }
-            if(imageSourceType == 0){
-                if (options.hasKey(OPTIONS_LOCAL_PATH)) {
-                    localPath = options.getString(OPTIONS_LOCAL_PATH);
-                    File file = new File(localPath);
-                    if(file.exists()){
-                        shareLocalImage();
+                    int type = options.getInt(OPTIONS_TYPE);
+                    switch (type) {
+                        case TYPE_TEXT:
+                            msg.mediaObject = getTextObj(options);
+                            break;
+                        case TYPE_IMAGE:
+                            msg.mediaObject = getImageObj(options);
+                            break;
+                        case TYPE_WEB_PAGE:
+                            msg.mediaObject = getWebpageObj(options);
+                            break;
+                        case TYPE_MUSIC:
+                            msg.mediaObject = getMusicObj(options);
+                            break;
+                        case TYPE_VIDEO:
+                            msg.mediaObject = getVideoObj(options);
+                            break;
+                        default:
+                            if (callback != null) {
+                                callback.invoke("please check correct media type !");
+                            }
+                            break;
+                    }
+
+                    if (options.hasKey(OPTIONS_TITLE)) {
+                        title = options.getString(OPTIONS_TITLE);
+                    }
+                    if (options.hasKey(OPTIONS_DESC)) {
+                        desc = options.getString(OPTIONS_DESC);
+                    }
+                    if (options.hasKey(OPTIONS_TAG_NAME)) {
+                        tagName = options.getString(OPTIONS_TAG_NAME);
+                    }
+                    if (options.hasKey(OPTIONS_THUMB_SIZE)) {
+                        thumbSize = options.getInt(OPTIONS_THUMB_SIZE);
+                    }
+                    if (options.hasKey(OPTIONS_TRANSACTION)) {
+                        transaction = options.getString(OPTIONS_TRANSACTION);
+                    }
+                    if (options.hasKey(OPTIONS_SCENE)) {
+                        scene = options.getInt(OPTIONS_SCENE);
+                    }
+
+                    if (!TextUtils.isEmpty(title)) {
+                        msg.title = title;
+                    }
+                    if (!TextUtils.isEmpty(desc)) {
+                        msg.description = desc;
+                    }
+                    if (!TextUtils.isEmpty(tagName)) {
+                        msg.mediaTagName = tagName;
+                    }
+                    if (bitmap != null) {
+                        Bitmap thumbBmp = Bitmap.createScaledBitmap(bitmap, thumbSize, thumbSize, true);
+                        bitmap.recycle();
+                        msg.thumbData = bmpToByteArray(thumbBmp, true);
+                    }
+
+                    SendMessageToWX.Req req = new SendMessageToWX.Req();
+                    req.message = msg;
+                    if (!TextUtils.isEmpty(transaction)) {
+                        req.transaction = transaction;
                     } else {
-                        if (errCallback != null) {
-                            errCallback.invoke("the local path is not found file !");
-                        }
+                        req.transaction = String.valueOf(System.currentTimeMillis());
                     }
-                }else{
-                    if (errCallback != null) {
-                        errCallback.invoke("please setting image local path !");
+                    if (scene == 0 || scene == 1 || scene == 2) {
+                        req.scene = scene;
+                    } else {
+                        req.scene = 0;
                     }
-                }
-            }else{
-                if (options.hasKey(OPTIONS_REMOTE_URL)) {
-                    remoteUrl = options.getString(OPTIONS_REMOTE_URL);
-                    shareRemoteImage();
-                }else{
-                    if (errCallback != null) {
-                        errCallback.invoke("please setting image remote path !");
+                    boolean sendReqOK = WeChatModule.wxApi.sendReq(req);
+                    if (callback != null) {
+                        callback.invoke(null, sendReqOK);
+                    }
+                } else {
+                    if (callback != null) {
+                        callback.invoke("please setting share type !");
                     }
                 }
-            }
-        } else {
-            if (errCallback != null) {
-                errCallback.invoke("please setting options !");
             }
         }
     }
 
+
     /**
-     * Added by heng on 2015/12/18
-     * <p/>
-     * WeChat pay method
-     * errCallback return error
+     * 微信支付
      */
     @ReactMethod
-    public void weChatPay(ReadableMap options, Callback errCallback) {
+    public void weChatPay(ReadableMap options, Callback callback) {
         if (WeChatModule.wxApi == null) {
-            if (errCallback != null) {
-                errCallback.invoke("please registerApp before this !");
+            if (callback != null) {
+                callback.invoke("please registerApp before this !");
             }
             return;
         }
@@ -350,105 +362,19 @@ public class WeChatModule extends ReactContextBaseJavaModule {
         request.prepayId = prepayId;
         request.timeStamp = timeStamp;
         request.sign = sign;
-        WeChatModule.wxApi.sendReq(request);
-    }
-
-    /**
-     * Added by heng on 2015/12/29
-     *
-     * share web page
-     */
-    void shareWebPage(String thumbImage){
-        WXWebpageObject webPage = new WXWebpageObject();
-        webPage.webpageUrl = link;
-        try {
-            WXMediaMessage msg = new WXMediaMessage(webPage);
-            Bitmap bitmap = BitmapFactory.decodeStream(new URL(thumbImage).openStream());
-            weChatShare(msg, bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
+        boolean sendReqOK = WeChatModule.wxApi.sendReq(request);
+        if (callback != null) {
+            callback.invoke(null, sendReqOK);
         }
     }
 
-    /**
-     * Added by heng on 2015/12/29
-     *
-     * share local image
-     */
-    void shareLocalImage(){
-        WXImageObject wxImageObject = new WXImageObject();
-        wxImageObject.setImagePath(localPath);
-
-        Bitmap bitmap = BitmapFactory.decodeFile(localPath);
-        WXMediaMessage msg = new WXMediaMessage(wxImageObject);
-        weChatShare(msg, bitmap);
-    }
 
     /**
      * Added by heng on 2015/12/29
-     *
-     * share remote image
-     */
-    void shareRemoteImage(){
-        WXImageObject wxImageObject = new WXImageObject();
-        wxImageObject.imageUrl = remoteUrl;
-        try {
-            WXMediaMessage msg = new WXMediaMessage(wxImageObject);
-            Bitmap bitmap = BitmapFactory.decodeStream(new URL(remoteUrl).openStream());
-            weChatShare(msg, bitmap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Added by heng on 2015/12/29
-     *
-     * weChat share
-     */
-    void weChatShare(WXMediaMessage msg,Bitmap bitmap) {
-        if(!TextUtils.isEmpty(tagName)){
-            msg.mediaTagName = tagName;
-        }
-        if(!TextUtils.isEmpty(title)){
-            msg.title = title;
-        }
-        if(!TextUtils.isEmpty(desc)){
-            msg.description = desc;
-        }
-        if (bitmap != null) {
-            Bitmap thumbBmp = Bitmap.createScaledBitmap(bitmap, thumbSize, thumbSize, true);
-            bitmap.recycle();
-            msg.thumbData = bmpToByteArray(thumbBmp, true);
-        }
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        if(!TextUtils.isEmpty(transaction)){
-            req.transaction = transaction;
-        }else{
-            req.transaction = String.valueOf(System.currentTimeMillis());
-        }
-        req.message = msg;
-        switch (scene) {
-            case SCENE_SESSION:
-                req.scene = SendMessageToWX.Req.WXSceneSession;
-                break;
-            case SCENE_TIMELINE:
-                req.scene = SendMessageToWX.Req.WXSceneTimeline;
-                break;
-            case SCENE_FAVORITE:
-                req.scene = SendMessageToWX.Req.WXSceneFavorite;
-                break;
-        }
-        WeChatModule.currentAction = ACTION_SHARE;
-        WeChatModule.wxApi.sendReq(req);
-    }
-
-    /**
-     * Added by heng on 2015/12/29
-     *
+     * <p/>
      * Bitmap to byte array
      */
-    byte[] bmpToByteArray(Bitmap bmp, boolean needRecycle) {
+    private byte[] bmpToByteArray(Bitmap bmp, boolean needRecycle) {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
         if (needRecycle) {
@@ -461,6 +387,112 @@ public class WeChatModule extends ReactContextBaseJavaModule {
             e.printStackTrace();
         }
         return result;
+    }
+
+    /**
+     * 获取文本对象
+     * */
+    private WXTextObject getTextObj(ReadableMap options) {
+        WXTextObject textObject = new WXTextObject();
+        if (options.hasKey(OPTIONS_TEXT)) {
+            textObject.text = options.getString(OPTIONS_TEXT);
+        }
+        return textObject;
+    }
+
+    /**
+     * 获取图片对象
+     * */
+    private WXImageObject getImageObj(ReadableMap options) {
+        WXImageObject imageObject = new WXImageObject();
+        if (options.hasKey(OPTIONS_IMAGE_URL)) {
+            String remoteUrl = options.getString(OPTIONS_IMAGE_URL);
+            imageObject.imageUrl = remoteUrl;
+            try {
+                bitmap = BitmapFactory.decodeStream(new URL(remoteUrl).openStream());
+            } catch (IOException e) {
+                bitmap = null;
+                e.printStackTrace();
+            }
+        }
+        if (options.hasKey(OPTIONS_IMAGE_PATH)) {
+            String localPath = options.getString(OPTIONS_IMAGE_PATH);
+            File file = new File(localPath);
+            if (file.exists()) {
+                imageObject.setImagePath(localPath);
+                bitmap = BitmapFactory.decodeFile(localPath);
+            } else {
+                bitmap = null;
+            }
+        }
+        return imageObject;
+    }
+
+    /**
+     * 获取网页对象
+     * */
+    private WXWebpageObject getWebpageObj(ReadableMap options) {
+        WXWebpageObject webpageObject = new WXWebpageObject();
+        if (options.hasKey(OPTIONS_WEBPAGE_URL)) {
+            webpageObject.webpageUrl = options.getString(OPTIONS_WEBPAGE_URL);
+        }
+        if(options.hasKey(OPTIONS_THUMB_IMAGE)){
+            String thumbImage = options.getString(OPTIONS_THUMB_IMAGE);
+            try {
+                bitmap = BitmapFactory.decodeStream(new URL(thumbImage).openStream());
+            } catch (IOException e) {
+                bitmap = null;
+                e.printStackTrace();
+            }
+        }
+        return webpageObject;
+    }
+
+    /**
+     * 获取音乐对象
+     * */
+    private WXMusicObject getMusicObj(ReadableMap options) {
+        WXMusicObject musicObject = new WXMusicObject();
+        if (options.hasKey(OPTIONS_MUSIC_URL)) {
+            musicObject.musicUrl = options.getString(OPTIONS_MUSIC_URL);
+        }
+        if (options.hasKey(OPTIONS_MUSIC_LOW_BAND_URL)) {
+            musicObject.musicLowBandUrl = options.getString(OPTIONS_MUSIC_LOW_BAND_URL);
+        }
+
+        if(options.hasKey(OPTIONS_THUMB_IMAGE)){
+            String thumbImage = options.getString(OPTIONS_THUMB_IMAGE);
+            try {
+                bitmap = BitmapFactory.decodeStream(new URL(thumbImage).openStream());
+            } catch (IOException e) {
+                bitmap = null;
+                e.printStackTrace();
+            }
+        }
+        return musicObject;
+    }
+
+    /**
+     * 获取视频对象
+     * */
+    private WXVideoObject getVideoObj(ReadableMap options){
+        WXVideoObject videoObject = new WXVideoObject();
+        if(options.hasKey(OPTIONS_VIDEO_URL)){
+            videoObject.videoUrl = options.getString(OPTIONS_VIDEO_URL);
+        }
+        if(options.hasKey(OPTIONS_VIDEO_LOW_BAND_URL)){
+            videoObject.videoLowBandUrl = options.getString(OPTIONS_VIDEO_LOW_BAND_URL);
+        }
+        if(options.hasKey(OPTIONS_THUMB_IMAGE)){
+            String thumbImage = options.getString(OPTIONS_THUMB_IMAGE);
+            try {
+                bitmap = BitmapFactory.decodeStream(new URL(thumbImage).openStream());
+            } catch (IOException e) {
+                bitmap = null;
+                e.printStackTrace();
+            }
+        }
+        return videoObject;
     }
 
 }
