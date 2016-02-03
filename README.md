@@ -207,9 +207,9 @@ var musicOptions = {
 var videoOptions = {
       title: '这里是分享的标题',
       desc: '这里是分享的标题',
-      transaction: 'music',
+      transaction: 'video',
       scene: 1,
-      type: 4,
+      type: 5,
 
       videoUrl: 'http://www.iqiyi.com/v_19rrnlidhk.html?src=sharemodclk131212',
       thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
