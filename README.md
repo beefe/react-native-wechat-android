@@ -52,6 +52,7 @@ WeChatAndroid.isWXAppInstalled(
     ...
  }
 );
+```
 
 ### isWXAppSupportAPI(callback)
 
