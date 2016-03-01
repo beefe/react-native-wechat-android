@@ -1,6 +1,6 @@
 {
   "name": "react-native-wechat-android",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "the wechat util for android",
   "main": "index.js",
   "scripts": {
