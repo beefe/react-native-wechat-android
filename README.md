@@ -268,8 +268,8 @@ DeviceEventEmitter.addListener('finishedPay',function(event){
 ```
 
 ## Notes
-打包apk请参考[Generating Signed APK](http://facebook.github.io/react-native/docs/signed-apk-android.html#content)
-如需要混淆，需要在混淆文件里加上以下代码：
+* 打包apk请参考[Generating Signed APK](http://facebook.github.io/react-native/docs/signed-apk-android.html#content)
+* 如需要混淆，需要在混淆文件里加上以下代码：
 ```text
 -keep class com.tencent.mm.sdk.** {
    *;
