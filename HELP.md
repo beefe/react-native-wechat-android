@@ -1,3 +1,4 @@
+# 本文档针对react-native版本为0.17及以下
 ## 建议用[Android Studio](http://developer.android.com/sdk/index.html)(需要翻墙)打开android 项目来修改，不然编译容易出错。
 
 ### 添加步骤：
