@@ -13,7 +13,7 @@ $ npm install rnpm -g
 
 #### 安装npm包
 ```shell
-npm install --save react-native-wechat-android
+$ npm install --save react-native-wechat-android
 ```
 
 #### 添加link
@@ -49,7 +49,7 @@ $ rnpm link react-native-wechat-android
 
 ##### WXEntryActivity.java
 ```java
-package com.loanbear.wxapi;    //改为你的包名   package com.xxx.wxapi;
+package com.xx.wxapi;    // 这里改为你的包名
 
 import android.app.Activity;
 import android.content.Context;
@@ -123,7 +123,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
 ##### WXPayEntryActivity.java
 
 ```java
-package com.loanbear.wxapi;           //改为你的包名   package com.xxx.wxapi;
+package com.xxx.wxapi;           // 这里改为你的包名
 
 import android.app.Activity;
 import android.content.Context;
