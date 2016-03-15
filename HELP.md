@@ -63,6 +63,7 @@ import com.heng.wechat.WeChatModule;
 import com.tencent.mm.sdk.modelbase.BaseReq;
 import com.tencent.mm.sdk.modelbase.BaseResp;
 import com.tencent.mm.sdk.modelmsg.SendAuth;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
 
 public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
