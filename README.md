@@ -233,7 +233,7 @@ DeviceEventEmitter.addListener('finishedShare',function(event){
 
 ### weChatPay(options,callback)
 
-options : [微信支付需要的参数](https://pay.weixin.qq.com/wiki/doc/api/app.php?chapter=9_12&index=2)
+options : [微信支付需要的参数](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_12&index=2)
 
 callback : 回调(err,res)
 
