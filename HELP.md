@@ -205,16 +205,15 @@ import WeChat from 'react-native-wechat-android';
 
 let appId = 'wx...';   // 你的AppId 
 
-//分享视频
-let videoOptions = {
-      title: 'see you again mv',
-      desc: '一起来怀念下吧',
-      transaction: 'video',
+var webpageOptions = {
+      title: '分享这个网页给你',
+      desc: '我发现这个网页很有趣，特意分享给你',
+      thumbSize: 150,
       scene: 0,
-      type: 5,
+      type: 3,
 
-      videoUrl: 'http://www.iqiyi.com/v_19rrnlidhk.html?src=sharemodclk131212',
-      thumbImage: 'http://zx.youdao.com/zx/wp-content/uploads/2015/04/6401.jpg',
+      webpageUrl: 'https://github.com/beefe/react-native-wechat-android',
+      thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
 }
 
 class MyProject extends React.Component{
@@ -231,7 +230,7 @@ class MyProject extends React.Component{
   }
   
   _share(){
-  		WeChat.sendReq(videoOptions,(err,sendOK) => {
+  		WeChat.sendReq(webpageOptions,(err,sendOK) => {
 		  });
   }
   componentWillMount: function(){
@@ -254,7 +253,7 @@ class MyProject extends React.Component{
           打开微信
         </Text>
         <Text style={styles.text} onPress={this._share} >
-          分享视频到微信
+          分享网页到微信
         </Text>
       </View>
     );
