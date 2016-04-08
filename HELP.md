@@ -206,7 +206,7 @@ import WeChat from 'react-native-wechat-android';
 
 let appId = 'wx...';   // 你的AppId 
 
-var webpageOptions = {
+let webpageOptions = {
       title: '分享这个网页给你',
       desc: '我发现这个网页很有趣，特意分享给你',
       thumbSize: 150,
@@ -263,7 +263,7 @@ class MyProject extends React.Component{
   }
 };
 
-var styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
