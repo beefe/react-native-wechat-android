@@ -198,6 +198,7 @@ import React, {
 	StyleSheet, 
 	View,
 	Text,
+	DeviceEventEmitter,
 	ToastAndroid,
 } from 'react-native';
 
@@ -214,7 +215,7 @@ var webpageOptions = {
 
       webpageUrl: 'https://github.com/beefe/react-native-wechat-android',
       thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
-}
+};
 
 class MyProject extends React.Component{
   _registerApp(){
@@ -233,7 +234,8 @@ class MyProject extends React.Component{
   		WeChat.sendReq(webpageOptions,(err,sendOK) => {
 		  });
   }
-  componentWillMount: function(){
+  
+  componentWillMount(){
     DeviceEventEmitter.addListener('finishedShare',function(event){   
       var success = event.success;                           
       if(success){
@@ -242,8 +244,9 @@ class MyProject extends React.Component{
         ToastAndroid.show('分享失败',ToastAndroid.SHORT);
       }
     });
-  },
-  render: function() {
+  }
+  
+  render() {
     return (
       <View style={styles.container}>
         <Text style={styles.text} onPress={this._registerApp} >
