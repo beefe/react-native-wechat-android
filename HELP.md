@@ -1,15 +1,8 @@
 ### 添加步骤：
-* [安装rnpm包](#安装rnpm包)(已安装rnpm包的请忽略本步骤)
 * [安装npm包](#安装npm包)
 * [添加link](#添加link)
-* [添加微信sdk](#添加微信sdk)(如果你的react-native >= 0.18.0，请忽略本步骤)
 * [添加微信回调类](#添加微信回调类)
 * [开始使用](#开始使用)
-
-#### 安装rnpm包
-```shell
-$ npm install rnpm -g
-```
 
 #### 安装npm包
 ```shell
@@ -18,12 +11,8 @@ $ npm install --save react-native-wechat-android
 
 #### 添加link
 ```shell
-$ rnpm link react-native-wechat-android
+$ react-native link react-native-wechat-android
 ```
-
-#### 添加微信sdk
-把wechat/libs/libammsdk.jar复制到android/app/libs文件夹下，或者去微信开放平台的资源中心 点击[Android资源下载](https://open.weixin.qq.com/cgi-bin/showdocument?action=dir_list&t=resource/res_list&verify=1&id=open1419319167)下载[Android开发工具包](https://res.wx.qq.com/open/zh_CN/htmledition/res/dev/download/sdk/Android2_SDK238f8d.zip)
-
 
 #### 添加微信回调类
 在你的包名相应目录下创建回调类的目录，例如应用程序的包名为com.heng,在该目录应该为com.heng.wxapi(微信指定的回调路径，不能更改,否则无法获取回调结果),并在该wxapi目录下创建[WXEntryActivity.java](#wxentryactivityjava)（微信登录和微信分享的回调类）和[WXPayEntryActivity.java](#wxpayentryactivityjava)（微信支付的回调类，如果没有微信支付功能不需要此类）,均需要继承自Activity（extends Activity），并在AndroidManifest.xml文件中添加如下代码：
