@@ -1,5 +1,5 @@
 # react-native-wechat-android [![npm version](https://img.shields.io/badge/npm-2.0.1 -blue.svg)](https://www.npmjs.com/package/react-native-wechat-android) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
-react-native 的微信SDK辅助包，支持微信登录、微信分享、微信支付。(本模块仅支持Android，[点我获取iOS支持](https://github.com/beefe/react-native-wechat-ios)）
+react-native 的微信SDK辅助包，支持微信登录、微信分享、微信支付。(本模块仅支持Android，[点我获取iOS支持](https://github.com/beefe/react-native-wechat-ios),与[iOS API兼容](https://github.com/beefe/react-native-wechat-android/wiki/%E5%85%BC%E5%AE%B9iOS)）
 
 ## [安装及使用方法](https://github.com/beefe/react-native-wechat-android/wiki)
 
@@ -36,7 +36,7 @@ callback : 回调(err,res)
 
 ```javascript
 WeChatAndroid.openWXApp((err,res) => {
- ...
+    ...
 });
 ```
 
@@ -48,9 +48,9 @@ callback : 回调(err,res)
 
 ```javascript
 WeChatAndroid.isWXAppInstalled(
- (err,isInstalled) => {
-    ...
- }
+    (err,isInstalled) => {
+        ...
+    }
 );
 ```
 
@@ -62,9 +62,9 @@ callback : 回调(err,res)
 
 ```javascript
 WeChatAndroid.isWXAppSupportAPI(
- (err,isSupport) => {
-  ...
- }
+    (err,isSupport) => {
+        ...
+    }
 );
 ```
 
@@ -76,9 +76,9 @@ callback : 回调(err,res)
 
 ```javascript
 WeChatAndroid.getWXAppSupportAPI(
- (err,supportAPI) => {
-    ...
- }
+    (err,supportAPI) => {
+        ...
+    }
 );
 ```
 
@@ -94,28 +94,27 @@ callback : 回调(err,res)
 
 ```javascript
 WeChatAndroid.sendAuthReq('snsapi_userinfo','SECRET',(err,authReqOK) => {
- ...
+    ...
 });
 ```
 or
 ```javascript
 WeChatAndroid.sendAuthReq(null,null,(err,authReqOK) => {
- ...
+    ...
 });
 ```
 ```javascript
 // 处理登录回调结果
 DeviceEventEmitter.addListener('finishedAuth',function(event){
- var success = event.success;
-  if(success){
-   ToastAndroid.show(
-    ' code = ' + JSON.stringify(event.code) +
-    ' state = ' + JSON.stringify(event.state),
-    ToastAndroid.LONG
-   );
-  }else{
-   ToastAndroid.show('授权失败',ToastAndroid.SHORT);
-  }
+    if(event.success){
+        ToastAndroid.show(
+            ' code = ' + JSON.stringify(event.code)
+            + ' state = ' + JSON.stringify(event.state),
+            ToastAndroid.LONG
+        );
+    }else{
+        ToastAndroid.show('授权失败',ToastAndroid.SHORT);
+    }
 });
 ```
 
@@ -153,81 +152,80 @@ callback : 回调(err,res)
 
 //分享文本
 var textOptions = {
-      title: '分享一段内容给你',
-      transaction: 'text',
-      scene: 0,
-      type: 1,
-      text: '这里是分享的文本内容',
+    title: '分享一段内容给你',
+    transaction: 'text',
+    scene: 0,
+    type: 1,
+    text: '这里是分享的文本内容',
 }
 
 //分享网络图片
 var networkImageOptions = {
-      title: '分享一张图片给你',
-      thumbSize: 150,
-      scene: 0,
-      type: 2,
+    title: '分享一张图片给你',
+    thumbSize: 150,
+    scene: 0,
+    type: 2,
 
-      imageUrl: 'https://avatars3.githubusercontent.com/u/3015681?v=3&s=460',
+    imageUrl: 'https://avatars3.githubusercontent.com/u/3015681?v=3&s=460',
 }
 
 //分享本地图片
 var localImageOptions = {
-      title: '分享一张图片给你',
-      thumbSize: 150,
-      scene: 0,
-      type: 2,
+    title: '分享一张图片给你',
+    thumbSize: 150,
+    scene: 0,
+    type: 2,
 
-      imagePath: '/mnt/sdcard/temp.png',
+    imagePath: '/mnt/sdcard/temp.png',
 }
 
 //分享网页
 var webpageOptions = {
-      title: '分享这个网页给你',
-      desc: '我发现这个网页很有趣，特意分享给你',
-      thumbSize: 150,
-      scene: 0,
-      type: 3,
+    title: '分享这个网页给你',
+    desc: '我发现这个网页很有趣，特意分享给你',
+    thumbSize: 150,
+    scene: 0,
+    type: 3,
 
-      webpageUrl: 'https://github.com/beefe/react-native-wechat-android',
-      thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
+    webpageUrl: 'https://github.com/beefe/react-native-wechat-android',
+    thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
 }
 
 //分享音乐
 var musicOptions = {
-      title: '这里是分享的标题',
-      desc: '发现一首好听的音乐，分享给你',
-      transaction: 'music',
-      scene: 1,
-      type: 4,
+    title: '这里是分享的标题',
+    desc: '发现一首好听的音乐，分享给你',
+    transaction: 'music',
+    scene: 1,
+    type: 4,
 
-      musicUrl: 'http://staff2.ustc.edu.cn/~wdw/softdown/index.asp/0042515_05.ANDY.mp3',
-      thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
+    musicUrl: 'http://staff2.ustc.edu.cn/~wdw/softdown/index.asp/0042515_05.ANDY.mp3',
+    thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
 }
 
 //分享视频
 var videoOptions = {
-      title: '这里是分享的标题',
-      desc: '这个视频好有趣，一起来看看',
-      transaction: 'video',
-      scene: 1,
-      type: 5,
+    title: '这里是分享的标题',
+    desc: '这个视频好有趣，一起来看看',
+    transaction: 'video',
+    scene: 1,
+    type: 5,
 
-      videoUrl: 'http://www.iqiyi.com/v_19rrnlidhk.html?src=sharemodclk131212',
-      thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
+    videoUrl: 'http://www.iqiyi.com/v_19rrnlidhk.html?src=sharemodclk131212',
+    thumbImage: 'http://img1.imgtn.bdimg.com/it/u=3924416677,403957246&fm=21&gp=0.jpg',
 }
 
 WeChatAndroid.sendReq(videoOptions,(err,sendOK) => {
- ...
+    ...
 });
 
 // 分享回调
 DeviceEventEmitter.addListener('finishedShare',function(event){
- var success = event.success;
- if(success){
-  ToastAndroid.show('分享成功',ToastAndroid.SHORT);
- }else{
-  ToastAndroid.show('分享失败',ToastAndroid.SHORT);
- }
+    if(event.success){
+        ToastAndroid.show('分享成功',ToastAndroid.SHORT);
+    }else{
+        ToastAndroid.show('分享失败',ToastAndroid.SHORT);
+    }
 });
 ```
 
@@ -240,28 +238,28 @@ callback : 回调(err,res)
 使用示例：
 
 ```javascript
+
 var payOptions = {
-  appId: 'wx8888888888888888',         
-  nonceStr: '5K8264ILTKCH16CQ2502SI8ZNMTM67VS',            
-  packageValue: 'Sign=WXPay',
-  partnerId: '1900000109',
-  prepayId: 'WX1217752501201407033233368018',
-  timeStamp: '1412000000',
-  sign: 'C380BEC2BFD727A4B6845133519F3AD6',
+    appId: 'wx8888888888888888',         
+    nonceStr: '5K8264ILTKCH16CQ2502SI8ZNMTM67VS',            
+    packageValue: 'Sign=WXPay',
+    partnerId: '1900000109',
+    prepayId: 'WX1217752501201407033233368018',
+    timeStamp: '1412000000',
+    sign: 'C380BEC2BFD727A4B6845133519F3AD6',
 };
 
 WeChatAndroid.weChatPay(payOptions,(err,sendReqOK) => {
- ...
+    ...
 });
 
 //  处理支付回调结果
 DeviceEventEmitter.addListener('finishedPay',function(event){
- var success = event.success;
- if(success){
-  // 在此发起网络请求由服务器验证是否真正支付成功，然后做出相应的处理
- }else{
-  ToastAndroid.show('支付失败',ToastAndroid.SHORT);
- }
+    if(event.success){
+        // 在此发起网络请求由服务器验证是否真正支付成功，然后做出相应的处理
+    }else{
+        ToastAndroid.show('支付失败',ToastAndroid.SHORT);
+    }
 });
 ```
 
