@@ -1,4 +1,4 @@
-# react-native-wechat-android [![npm version](https://img.shields.io/badge/npm-2.0.1 -blue.svg)](https://www.npmjs.com/package/react-native-wechat-android) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+# react-native-wechat-android [![npm version](https://img.shields.io/npm/v/react-native-wechat-android.svg?style=flat-square)](https://www.npmjs.com/package/react-native-wechat-android) ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
 react-native 的微信SDK辅助包，支持微信登录、微信分享、微信支付(本模块仅支持Android)。
 
 <h4>[iOS模块](https://github.com/beefe/react-native-wechat-ios)地址
