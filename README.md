@@ -232,6 +232,38 @@ DeviceEventEmitter.addListener('finishedShare',function(event){
 });
 ```
 
+#### WechatAPI.shareToTimeline(data)
+分享到朋友圈
+
+```javascript
+// 分享文字
+{	
+	type: 'text', 
+	text: 文字内容,
+}
+```
+
+```javascript
+// 分享图片
+{	
+	type: 'image',
+	imageUrl: 图片地址,
+	title : 标题,
+	description : 描述,
+}
+```
+
+```javascript
+// 分享网页
+{	
+	type: 'news',
+	title : 标题,
+	description : 描述,	
+	webpageUrl : 链接地址,
+	imageUrl: 缩略图地址,
+}
+```
+
 ### weChatPay(options,callback)
 
 options : [微信支付需要的参数](https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_12&index=2)
