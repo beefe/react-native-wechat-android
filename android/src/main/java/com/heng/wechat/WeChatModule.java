@@ -552,10 +552,14 @@ public class WeChatModule extends ReactContextBaseJavaModule {
         return videoObject;
     }
 
-//    @ReactMethod
-//    public void shareToSession(ReadableMap data, Callback callback){
-//        _share(SendMessageToWX.Req.WXSceneSession, data, callback);
-//    }
+
+    /**
+    * 分享到微信
+    * */
+   @ReactMethod
+   public void shareToSession(ReadableMap data, Callback callback){
+       _share(SendMessageToWX.Req.WXSceneSession, data, callback);
+   }
 
 
     private String _getErrorMsg(int errCode) {
